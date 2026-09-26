@@ -38,11 +38,17 @@ export async function apiGetMe(): Promise<UserProfile> {
   return toUserProfile(data.data)
 }
 
-/** Phone is only ever set server-side once the Telegram bot relays a shared contact
- * (see UsersService.setPhoneFromBotContact) — there is no client-triggerable "start
+/** Phone is normally set server-side once the Telegram bot relays a shared contact
+ * (see UsersService.registerFromBot) — there is no client-triggerable "start
  * verification" call. PhonePage polls apiGetMe() until `phone` shows up. */
 export async function apiStartPhoneVerification(): Promise<void> {
   return Promise.resolve()
+}
+
+/** Fallback for when the bot's contact-share can't reach the client (bot webhook
+ * unreachable, etc.) — the user types their own number instead of sharing it. */
+export async function apiSetPhoneManually(phone: string): Promise<void> {
+  await http.patch('/me', { phone })
 }
 
 export async function apiGetRate(stationId?: string): Promise<RateInfo> {

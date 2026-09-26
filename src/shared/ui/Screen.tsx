@@ -11,7 +11,11 @@ export function Screen({
   padded?: boolean
 }) {
   return (
-    <div className="mx-auto min-h-full w-full max-w-[480px]">
+    // pt on the outer wrapper (not the customizable inner div) so it never collides with
+    // a page's own pt-* in `className` — Telegram's fullscreen Mini App mode extends
+    // content behind the device's status bar/notch, so every screen needs this space
+    // regardless of whether it also uses a sticky PageHeader (which pads itself too).
+    <div className="mx-auto min-h-full w-full max-w-[480px] pt-[env(safe-area-inset-top)]">
       <div className={cn(padded && 'px-4 pb-8', className)}>{children}</div>
     </div>
   )

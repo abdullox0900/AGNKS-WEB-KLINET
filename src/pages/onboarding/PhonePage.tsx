@@ -5,7 +5,7 @@ import { Button } from '@/shared/ui/Button'
 import { Screen } from '@/shared/ui/Screen'
 import { useI18n } from '@/app/providers/I18nProvider'
 import { isInTelegram, tgRequestContact } from '@/shared/lib/telegram'
-import { apiGetMe, apiStartPhoneVerification } from '@/shared/api/client'
+import { apiGetMe, apiSetPhoneManually, apiStartPhoneVerification } from '@/shared/api/client'
 
 type Status = 'idle' | 'checking' | 'timeout' | 'denied'
 
@@ -13,6 +13,10 @@ export function PhonePage() {
   const navigate = useNavigate()
   const { t } = useI18n()
   const [status, setStatus] = useState<Status>('idle')
+  const [manual, setManual] = useState(false)
+  const [phone, setPhone] = useState('+998 ')
+  const [manualError, setManualError] = useState<string | null>(null)
+  const [manualSubmitting, setManualSubmitting] = useState(false)
   const intervalRef = useRef<number | null>(null)
 
   useEffect(() => {
@@ -47,6 +51,54 @@ export function PhonePage() {
     }, 1500)
   }
 
+  async function handleManualSubmit() {
+    const normalized = phone.replace(/\s/g, '')
+    if (!/^\+998\d{9}$/.test(normalized)) {
+      setManualError("Raqam noto'g'ri — +998901234567 shaklida yozing")
+      return
+    }
+    setManualSubmitting(true)
+    setManualError(null)
+    try {
+      await apiSetPhoneManually(normalized)
+      navigate('/onboarding/name')
+    } catch {
+      setManualError('Xatolik yuz berdi, qayta urinib ko\'ring')
+    } finally {
+      setManualSubmitting(false)
+    }
+  }
+
+  if (manual) {
+    return (
+      <Screen className="flex min-h-screen flex-col justify-between pt-20">
+        <div>
+          <div className="mb-8 flex h-16 w-16 items-center justify-center rounded-2xl bg-[var(--color-primary-soft)]">
+            <Phone size={28} className="text-[var(--color-primary)]" />
+          </div>
+          <h1 className="mb-2 text-[24px] font-bold text-[var(--color-ink)]">{t('phone.title')}</h1>
+          <p className="mb-6 text-[15px] text-[var(--color-ink-secondary)]">Telefon raqamingizni yozing</p>
+          <input
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
+            placeholder="+998901234567"
+            className="h-13 w-full rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-3.5 text-[16px] text-[var(--color-ink)] outline-none focus:border-[var(--color-primary)]"
+          />
+          {manualError && <p className="mt-2 text-[14px] font-medium text-[var(--color-danger)]">{manualError}</p>}
+        </div>
+
+        <div className="space-y-2">
+          <Button onClick={handleManualSubmit} loading={manualSubmitting}>
+            Davom etish
+          </Button>
+          <Button variant="ghost" onClick={() => setManual(false)}>
+            Orqaga
+          </Button>
+        </div>
+      </Screen>
+    )
+  }
+
   return (
     <Screen className="flex min-h-screen flex-col justify-between pt-20">
       <div>
@@ -70,9 +122,14 @@ export function PhonePage() {
         )}
       </div>
 
-      <Button onClick={handleShare} loading={status === 'checking'}>
-        {status === 'timeout' || status === 'denied' ? t('phone.retry') : t('phone.share')}
-      </Button>
+      <div className="space-y-2">
+        <Button onClick={handleShare} loading={status === 'checking'}>
+          {status === 'timeout' || status === 'denied' ? t('phone.retry') : t('phone.share')}
+        </Button>
+        <Button variant="ghost" onClick={() => setManual(true)} disabled={status === 'checking'}>
+          Raqamni qo'lda kiritish
+        </Button>
+      </div>
     </Screen>
   )
 }
