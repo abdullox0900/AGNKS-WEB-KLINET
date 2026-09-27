@@ -1,6 +1,8 @@
 import { AlertCircle } from 'lucide-react'
+import { useI18n } from '@/app/providers/I18nProvider'
 
 export function ErrorState({ message, onRetry, retryLabel }: { message: string; onRetry?: () => void; retryLabel?: string }) {
+  const { t } = useI18n()
   return (
     <div className="flex flex-col items-center justify-center gap-3 py-10 text-center">
       <AlertCircle size={28} className="text-[var(--color-ink-tertiary)]" />
@@ -10,7 +12,7 @@ export function ErrorState({ message, onRetry, retryLabel }: { message: string; 
           onClick={onRetry}
           className="text-[14px] font-semibold text-[var(--color-primary)] active:opacity-70"
         >
-          {retryLabel ?? 'Qayta urinish'}
+          {retryLabel ?? t('common.retry')}
         </button>
       )}
     </div>

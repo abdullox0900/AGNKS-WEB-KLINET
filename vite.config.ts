@@ -14,7 +14,8 @@ import { defineConfig } from 'vite'
 //     -addext "subjectAltName=DNS:localhost,IP:127.0.0.1,IP:<your-lan-ip>"
 const certPath = fileURLToPath(new URL('./certs/dev-cert.pem', import.meta.url))
 const keyPath = fileURLToPath(new URL('./certs/dev-key.pem', import.meta.url))
-const hasCerts = existsSync(certPath) && existsSync(keyPath)
+// DEV_HTTP=1 → plain HTTP (UI-only preview, no camera needed).
+const hasCerts = process.env.DEV_HTTP !== '1' && existsSync(certPath) && existsSync(keyPath)
 const httpsOptions = hasCerts ? { cert: readFileSync(certPath), key: readFileSync(keyPath) } : undefined
 
 export default defineConfig({

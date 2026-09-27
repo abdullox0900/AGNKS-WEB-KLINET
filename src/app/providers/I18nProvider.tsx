@@ -1,5 +1,5 @@
 import { createContext, useCallback, useContext, useMemo, type ReactNode } from 'react'
-import { dictionaries, type DictKey } from '@/shared/config/dictionaries'
+import { translate, type DictKey } from '@/shared/config/dictionaries'
 import { useAppStore } from '@/shared/config/appStore'
 
 interface I18nContextValue {
@@ -15,15 +15,7 @@ export function I18nProvider({ children }: { children: ReactNode }) {
   const setLocale = useAppStore((s) => s.setLocale)
 
   const t = useCallback(
-    (key: DictKey, vars?: Record<string, string | number>) => {
-      let str: string = dictionaries[locale][key] ?? key
-      if (vars) {
-        for (const [k, v] of Object.entries(vars)) {
-          str = str.replace(`{${k}}`, String(v))
-        }
-      }
-      return str
-    },
+    (key: DictKey, vars?: Record<string, string | number>) => translate(locale, key, vars),
     [locale],
   )
 

@@ -17,7 +17,7 @@ export function RateBanner() {
       <div className="flex items-center gap-2 rounded-2xl bg-[var(--color-amber-soft)] px-4 py-3">
         <Sparkles size={16} className="shrink-0 text-[var(--color-amber)]" />
         <p className="text-[13px] font-medium text-[var(--color-amber-strong)]">
-          {data.promo.label} · {data.promo.percent}% · {locale === 'ru' ? 'сегодня до' : 'bugun'} {time}{locale === 'ru' ? '' : ' gacha'}
+          {data.promo.label} · {data.promo.percent}% · {t('home.promo_until', { time })}
         </p>
       </div>
     )

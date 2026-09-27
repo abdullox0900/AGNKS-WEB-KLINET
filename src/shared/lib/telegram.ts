@@ -24,6 +24,11 @@ interface TelegramWebApp {
     getLocation: (cb: (data: { latitude: number; longitude: number } | null) => void) => void
   }
   safeAreaInset?: { top: number; bottom: number; left: number; right: number }
+  onEvent?: (event: string, cb: () => void) => void
+  offEvent?: (event: string, cb: () => void) => void
+  setHeaderColor?: (color: string) => void
+  setBackgroundColor?: (color: string) => void
+  setBottomBarColor?: (color: string) => void
 }
 
 declare global {
@@ -151,4 +156,30 @@ export function tgEnableClosingConfirmation(enable: boolean) {
 
 export function tgUser() {
   return getTelegram()?.initDataUnsafe?.user ?? null
+}
+
+/** Telegram's own light/dark scheme, or null outside Telegram. */
+export function tgColorScheme(): 'light' | 'dark' | null {
+  return isInTelegram() ? (getTelegram()?.colorScheme ?? null) : null
+}
+
+/** Subscribes to Telegram theme switches; returns an unsubscribe fn. */
+export function tgOnThemeChanged(cb: () => void): () => void {
+  const tg = getTelegram()
+  if (!isInTelegram() || !tg?.onEvent) return () => {}
+  tg.onEvent('themeChanged', cb)
+  return () => tg.offEvent?.('themeChanged', cb)
+}
+
+/** Paints Telegram's header/background/bottom-bar chrome so it blends with the page. */
+export function tgPaintChrome(color: string) {
+  const tg = getTelegram()
+  if (!isInTelegram() || !tg) return
+  try {
+    tg.setHeaderColor?.(color)
+    tg.setBackgroundColor?.(color)
+    if (tg.isVersionAtLeast('7.10')) tg.setBottomBarColor?.(color)
+  } catch {
+    /* older clients */
+  }
 }

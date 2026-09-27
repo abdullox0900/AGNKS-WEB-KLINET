@@ -12,16 +12,16 @@ function backNavigator(navigate: ReturnType<typeof useNavigate>, location: Locat
   }
 }
 
-export function useBackButton(onBack?: () => void) {
+export function useBackButton(onBack?: () => void, enabled = true) {
   const navigate = useNavigate()
   const location = useLocation()
   const goBack = onBack ?? backNavigator(navigate, location)
 
   useEffect(() => {
-    if (!isInTelegram()) return
+    if (!enabled || !isInTelegram()) return
     return tgSetBackButton(goBack)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [navigate, onBack, location.key])
+  }, [navigate, onBack, location.key, enabled])
 
-  return { showFallback: !isInTelegram(), goBack }
+  return { showFallback: enabled && !isInTelegram(), goBack }
 }

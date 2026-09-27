@@ -2,6 +2,7 @@ import { createBrowserRouter, Outlet } from 'react-router-dom'
 import { RequireOnboarding } from './RequireOnboarding'
 import { OfflineBanner } from '@/shared/ui/OfflineBanner'
 import { ErrorBoundary } from '@/shared/ui/ErrorBoundary'
+import { BottomNav, BOTTOM_NAV_HEIGHT } from '@/widgets/BottomNav'
 
 import { LangPage } from '@/pages/onboarding/LangPage'
 import { PhonePage } from '@/pages/onboarding/PhonePage'
@@ -14,6 +15,8 @@ import { ResultPage } from '@/pages/earn/ResultPage'
 import { SpendPage } from '@/pages/spend/SpendPage'
 import { HistoryPage } from '@/pages/history/HistoryPage'
 import { SettingsPage } from '@/pages/settings/SettingsPage'
+import { GuidePage } from '@/pages/guide/GuidePage'
+import { PromotionsPage } from '@/pages/promotions/PromotionsPage'
 
 function MainLayout() {
   return (
@@ -26,6 +29,18 @@ function MainLayout() {
   )
 }
 
+/** Top-level tabs share the bottom bar; pad content so it never hides behind it. */
+function TabsLayout() {
+  return (
+    <>
+      <div style={{ paddingBottom: `calc(${BOTTOM_NAV_HEIGHT + 16}px + env(safe-area-inset-bottom))` }}>
+        <Outlet />
+      </div>
+      <BottomNav />
+    </>
+  )
+}
+
 export const router = createBrowserRouter([
   { path: '/onboarding/lang', element: <LangPage /> },
   { path: '/onboarding/phone', element: <PhonePage /> },
@@ -34,12 +49,19 @@ export const router = createBrowserRouter([
   {
     element: <MainLayout />,
     children: [
-      { path: '/', element: <HomePage /> },
+      {
+        element: <TabsLayout />,
+        children: [
+          { path: '/', element: <HomePage /> },
+          { path: '/history', element: <HistoryPage /> },
+          { path: '/spend', element: <SpendPage /> },
+          { path: '/settings', element: <SettingsPage /> },
+        ],
+      },
       { path: '/earn/scan', element: <ScanPage /> },
       { path: '/earn/result/:id', element: <ResultPage /> },
-      { path: '/spend', element: <SpendPage /> },
-      { path: '/history', element: <HistoryPage /> },
-      { path: '/settings', element: <SettingsPage /> },
+      { path: '/guide', element: <GuidePage /> },
+      { path: '/promotions', element: <PromotionsPage /> },
     ],
   },
 ])

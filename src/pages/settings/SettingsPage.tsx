@@ -1,15 +1,17 @@
 import { useState } from 'react'
-import { Globe, MessageCircle, MessageSquareText, FileText, ShieldCheck, Info } from 'lucide-react'
+import { Globe, Megaphone, MessageSquareText, Info, CircleHelp, SunMoon, Sun, Moon, Check, ChevronRight, LogOut } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
 import { PageHeader } from '@/shared/ui/PageHeader'
 import { Screen } from '@/shared/ui/Screen'
 import { Sheet } from '@/shared/ui/Sheet'
+import { useI18n } from '@/app/providers/I18nProvider'
+import { useAppStore, type ThemePref } from '@/shared/config/appStore'
+import { FeedbackSheet } from '@/features/feedback/FeedbackSheet'
+import { cn } from '@/shared/lib/cn'
 import { Button } from '@/shared/ui/Button'
 import { useToast } from '@/shared/ui/Toast'
-import { useI18n } from '@/app/providers/I18nProvider'
-import { useAppStore } from '@/shared/config/appStore'
-import { apiSendFeedback, apiSetMarketingOptIn } from '@/shared/api/client'
-import { tgOpenLink } from '@/shared/lib/telegram'
-import { cn } from '@/shared/lib/cn'
+import { apiLogout } from '@/shared/api/client'
+import { useSWRConfig } from 'swr'
 
 function Row({ icon, label, right, onClick }: { icon: React.ReactNode; label: string; right?: React.ReactNode; onClick?: () => void }) {
   const content = (
@@ -36,33 +38,40 @@ function Row({ icon, label, right, onClick }: { icon: React.ReactNode; label: st
   )
 }
 
-function Toggle({ checked, onChange }: { checked: boolean; onChange: (v: boolean) => void }) {
-  return (
-    <button
-      onClick={() => onChange(!checked)}
-      className={`h-7 w-12 rounded-full p-0.5 transition-colors ${checked ? 'bg-[var(--color-primary)]' : 'bg-[var(--color-border)]'}`}
-    >
-      <span
-        className={`block h-6 w-6 rounded-full bg-white transition-transform ${checked ? 'translate-x-5' : 'translate-x-0'}`}
-      />
-    </button>
-  )
-}
+const THEME_OPTIONS: { value: ThemePref; icon: typeof Sun }[] = [
+  { value: 'auto', icon: SunMoon },
+  { value: 'light', icon: Sun },
+  { value: 'dark', icon: Moon },
+]
 
 export function SettingsPage() {
   const { t, locale, setLocale } = useI18n()
-  const marketingOptIn = useAppStore((s) => s.marketingOptIn)
-  const setMarketingOptIn = useAppStore((s) => s.setMarketingOptIn)
-  const [sheet, setSheet] = useState<'lang' | 'offer' | 'privacy' | 'feedback' | null>(null)
+  const navigate = useNavigate()
+  const [sheet, setSheet] = useState<'lang' | 'theme' | 'feedback' | 'logout' | null>(null)
+  const theme = useAppStore((s) => s.theme)
+  const setTheme = useAppStore((s) => s.setTheme)
+  const { mutate } = useSWRConfig()
+  const { show } = useToast()
+  const [loggingOut, setLoggingOut] = useState(false)
 
-  async function handleMarketingChange(value: boolean) {
-    setMarketingOptIn(value)
-    await apiSetMarketingOptIn(value)
+  async function handleLogout() {
+    setLoggingOut(true)
+    try {
+      await apiLogout()
+      // drop every cached response so nothing of the old profile flashes after re-registration
+      await mutate(() => true, undefined, { revalidate: false })
+      setSheet(null)
+      navigate('/onboarding/lang', { replace: true })
+    } catch {
+      show(t('common.error_generic'))
+    } finally {
+      setLoggingOut(false)
+    }
   }
 
   return (
     <Screen padded={false}>
-      <PageHeader title={t('settings.title')} />
+      <PageHeader title={t('settings.title')} back={false} />
       <div className="px-4">
         <div className="rounded-2xl bg-[var(--color-surface)] px-4" style={{ boxShadow: 'var(--shadow-card)' }}>
           <Row
@@ -72,17 +81,45 @@ export function SettingsPage() {
             right={<span className="text-[13px] text-[var(--color-ink-tertiary)]">{locale === 'uz' ? "O'zbekcha" : 'Русский'}</span>}
           />
           <Row
-            icon={<MessageCircle size={17} />}
-            label={t('settings.marketing')}
-            right={<Toggle checked={marketingOptIn} onChange={handleMarketingChange} />}
+            icon={<SunMoon size={17} />}
+            label={t('settings.theme')}
+            onClick={() => setSheet('theme')}
+            right={<span className="text-[13px] text-[var(--color-ink-tertiary)]">{t(`theme.${theme}`)}</span>}
           />
-          <Row icon={<MessageSquareText size={17} />} label="Taklif va shikoyat" onClick={() => setSheet('feedback')} />
-          <Row icon={<FileText size={17} />} label={t('settings.offer')} onClick={() => setSheet('offer')} />
-          <Row icon={<ShieldCheck size={17} />} label={t('settings.privacy')} onClick={() => setSheet('privacy')} />
-          <Row icon={<MessageCircle size={17} />} label={t('settings.contact')} onClick={() => tgOpenLink('https://t.me/agnks_support')} />
+          <Row
+            icon={<Megaphone size={17} />}
+            label={t('promo.title')}
+            onClick={() => navigate('/promotions')}
+            right={<ChevronRight size={18} className="text-[var(--color-ink-tertiary)]" />}
+          />
+          <Row icon={<CircleHelp size={17} />} label={t('home.how_title')} onClick={() => navigate('/guide')} />
+          <Row icon={<MessageSquareText size={17} />} label={t('feedback.title')} onClick={() => setSheet('feedback')} />
           <Row icon={<Info size={17} />} label={t('settings.version')} right={<span className="text-[13px] text-[var(--color-ink-tertiary)]">1.0.0</span>} />
         </div>
+
+        <button
+          onClick={() => setSheet('logout')}
+          className="mt-4 flex w-full items-center gap-3 rounded-2xl bg-[var(--color-surface)] px-4 py-3.5 text-left"
+          style={{ boxShadow: 'var(--shadow-card)' }}
+        >
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[var(--color-danger-soft)] text-[var(--color-danger)]">
+            <LogOut size={17} />
+          </span>
+          <span className="flex-1 text-[15px] font-medium text-[var(--color-danger)]">{t('logout.row')}</span>
+        </button>
       </div>
+
+      <Sheet open={sheet === 'logout'} onClose={() => !loggingOut && setSheet(null)} title={t('logout.title')}>
+        <p className="text-[14px] leading-relaxed text-[var(--color-ink-secondary)]">{t('logout.desc')}</p>
+        <div className="mt-5 space-y-2 pb-2">
+          <Button variant="danger" loading={loggingOut} onClick={handleLogout}>
+            {t('logout.confirm')}
+          </Button>
+          <Button variant="ghost" disabled={loggingOut} onClick={() => setSheet(null)}>
+            {t('logout.cancel')}
+          </Button>
+        </div>
+      </Sheet>
 
       <Sheet open={sheet === 'lang'} onClose={() => setSheet(null)} title={t('settings.language')}>
         <div className="space-y-2 pb-6">
@@ -103,65 +140,39 @@ export function SettingsPage() {
         </div>
       </Sheet>
 
-      <Sheet open={sheet === 'offer' || sheet === 'privacy'} onClose={() => setSheet(null)} title={sheet === 'offer' ? t('settings.offer') : t('settings.privacy')}>
-        <p className="pb-6 text-[14px] leading-relaxed text-[var(--color-ink-secondary)]">
-          AGNKS Loyalty dasturi doirasida bonus yig'ish va sarflash shartlari, mijoz ma'lumotlarini qayta ishlash
-          tartibi ushbu hujjatda belgilanadi. To'liq matn tez orada shu yerda ko'rsatiladi.
-        </p>
+      <Sheet open={sheet === 'theme'} onClose={() => setSheet(null)} title={t('settings.theme')}>
+        <div className="space-y-2 pb-6">
+          {THEME_OPTIONS.map(({ value, icon: Icon }) => {
+            const active = theme === value
+            return (
+              <button
+                key={value}
+                onClick={() => {
+                  setTheme(value)
+                  setSheet(null)
+                }}
+                className={cn(
+                  'flex w-full items-center gap-3 rounded-2xl border px-4 py-3.5 text-left',
+                  active ? 'border-[var(--color-primary)] bg-[var(--color-primary-soft)]' : 'border-[var(--color-border)]',
+                )}
+              >
+                <Icon size={20} className={active ? 'text-[var(--color-primary)]' : 'text-[var(--color-ink-secondary)]'} />
+                <span className="flex-1">
+                  <span className={cn('block text-[15px] font-medium', active ? 'text-[var(--color-primary)]' : 'text-[var(--color-ink)]')}>
+                    {t(`theme.${value}`)}
+                  </span>
+                  {value === 'auto' && (
+                    <span className="block text-[12.5px] text-[var(--color-ink-tertiary)]">{t('theme.auto_hint')}</span>
+                  )}
+                </span>
+                {active && <Check size={18} className="text-[var(--color-primary)]" />}
+              </button>
+            )
+          })}
+        </div>
       </Sheet>
 
-      <Sheet open={sheet === 'feedback'} onClose={() => setSheet(null)} title="Taklif va shikoyat">
-        <FeedbackForm onSent={() => setSheet(null)} />
-      </Sheet>
+      <FeedbackSheet open={sheet === 'feedback'} onClose={() => setSheet(null)} />
     </Screen>
-  )
-}
-
-function FeedbackForm({ onSent }: { onSent: () => void }) {
-  const { show } = useToast()
-  const [kind, setKind] = useState<'suggestion' | 'complaint'>('suggestion')
-  const [message, setMessage] = useState('')
-  const [submitting, setSubmitting] = useState(false)
-
-  async function handleSubmit() {
-    if (!message.trim() || submitting) return
-    setSubmitting(true)
-    try {
-      await apiSendFeedback({ kind, message: message.trim() })
-      show('Yuborildi, rahmat!')
-      onSent()
-    } finally {
-      setSubmitting(false)
-    }
-  }
-
-  return (
-    <div className="space-y-4 pb-6">
-      <div className="flex gap-2">
-        {(['suggestion', 'complaint'] as const).map((k) => (
-          <button
-            key={k}
-            onClick={() => setKind(k)}
-            className={cn(
-              'flex-1 rounded-2xl border px-4 py-3 text-[14px] font-medium',
-              kind === k ? 'border-[var(--color-primary)] bg-[var(--color-primary-soft)] text-[var(--color-primary)]' : 'border-[var(--color-border)] text-[var(--color-ink-secondary)]',
-            )}
-          >
-            {k === 'suggestion' ? 'Taklif' : 'Shikoyat'}
-          </button>
-        ))}
-      </div>
-      <textarea
-        value={message}
-        onChange={(e) => setMessage(e.target.value.slice(0, 1000))}
-        rows={6}
-        placeholder={kind === 'suggestion' ? 'Taklifingizni yozing…' : 'Nima yuz berganini yozing…'}
-        className="w-full resize-none rounded-2xl border border-[var(--color-border)] bg-[var(--color-bg)] px-4 py-3.5 text-[15px] text-[var(--color-ink)] outline-none focus:border-[var(--color-primary)]"
-      />
-      <p className="text-right text-[11px] text-[var(--color-ink-tertiary)]">{message.length}/1000</p>
-      <Button className="w-full" loading={submitting} disabled={!message.trim()} onClick={handleSubmit}>
-        Yuborish
-      </Button>
-    </div>
   )
 }

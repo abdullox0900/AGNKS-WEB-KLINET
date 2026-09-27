@@ -5,8 +5,10 @@ import { ToastProvider } from '@/shared/ui/Toast'
 import { ErrorBoundary } from '@/shared/ui/ErrorBoundary'
 import { isClientError } from '@/shared/api/errors'
 import { tgReady } from '@/shared/lib/telegram'
+import { useApplyTheme } from '@/shared/lib/useTheme'
 
 export function AppProviders({ children }: { children: ReactNode }) {
+  useApplyTheme()
   useEffect(() => {
     tgReady()
   }, [])

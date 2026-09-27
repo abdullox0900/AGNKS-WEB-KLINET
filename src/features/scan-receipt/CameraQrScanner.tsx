@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import QrScanner from 'qr-scanner'
+import { useI18n } from '@/app/providers/I18nProvider'
+import type { DictKey } from '@/shared/config/dictionaries'
 
 interface CameraQrScannerProps {
   onDetect: (text: string) => void
@@ -19,11 +21,12 @@ interface CameraQrScannerProps {
  * fixed/slow-hunting focus which is the main reason close-up receipt QR codes
  * take a long time (or never) come into focus. */
 export function CameraQrScanner({ onDetect, paused }: CameraQrScannerProps) {
+  const { t } = useI18n()
   const videoRef = useRef<HTMLVideoElement>(null)
   const scannerRef = useRef<QrScanner | null>(null)
   const streamRef = useRef<MediaStream | null>(null)
   const detectedRef = useRef(false)
-  const [error, setError] = useState<string | null>(null)
+  const [error, setError] = useState<DictKey | null>(null)
   const [ready, setReady] = useState(false)
 
   useEffect(() => {
@@ -34,7 +37,7 @@ export function CameraQrScanner({ onDetect, paused }: CameraQrScannerProps) {
 
     async function start() {
       if (!navigator.mediaDevices?.getUserMedia) {
-        setError("Bu brauzer kamerani qo'llamaydi")
+        setError('scan.unsupported')
         return
       }
       try {
@@ -77,10 +80,10 @@ export function CameraQrScanner({ onDetect, paused }: CameraQrScannerProps) {
         const message = err instanceof Error ? err.message : String(err)
         setError(
           /permission|denied|NotAllowed/i.test(message)
-            ? 'Kameraga ruxsat berilmadi — brauzer sozlamalaridan ruxsat bering'
+            ? 'scan.denied'
             : /NotFound/i.test(message)
-              ? 'Kamera topilmadi'
-              : "Kamerani ochib bo'lmadi (https yoki localhost kerak)",
+              ? 'scan.not_found'
+              : 'scan.failed',
         )
       }
     }
@@ -102,7 +105,7 @@ export function CameraQrScanner({ onDetect, paused }: CameraQrScannerProps) {
       <div className="relative mx-auto aspect-square w-full max-w-[340px] overflow-hidden rounded-2xl bg-black">
         {error ? (
           <div className="flex h-full w-full items-center justify-center px-6 text-center text-[13px] text-[var(--color-danger)]">
-            {error}
+            {t(error)}
           </div>
         ) : (
           <>
@@ -111,7 +114,7 @@ export function CameraQrScanner({ onDetect, paused }: CameraQrScannerProps) {
               <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-black/55 backdrop-blur-[1px]">
                 <span className="h-8 w-8 animate-spin rounded-full border-2 border-white/40 border-t-white" />
                 <p className="text-[13px] font-medium text-white">
-                  {paused ? 'Yuborilmoqda…' : 'Kamera ochilmoqda…'}
+                  {t(paused ? 'scan.sending' : 'scan.opening')}
                 </p>
               </div>
             )}

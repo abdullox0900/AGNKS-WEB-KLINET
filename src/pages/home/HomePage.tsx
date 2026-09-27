@@ -1,70 +1,38 @@
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { ScanLine, Wallet, Settings } from 'lucide-react'
+import { Wallet, Lightbulb, MessageSquareWarning, ChevronRight, CircleHelp, X } from 'lucide-react'
 import { useMe } from '@/shared/api/hooks'
 import { Screen } from '@/shared/ui/Screen'
 import { Button } from '@/shared/ui/Button'
 import { BalanceBlock } from '@/widgets/BalanceBlock'
 import { RateBanner } from '@/widgets/RateBanner'
-import { HistoryPreview } from '@/widgets/HistoryPreview'
 import { OfflineBanner } from '@/shared/ui/OfflineBanner'
 import { useI18n } from '@/app/providers/I18nProvider'
 import { formatMoney } from '@/shared/lib/format'
-import { tgShowScanQrPopup, tgCloseScanQrPopup, tgHaptic } from '@/shared/lib/telegram'
-import { apiSubmitReceipt } from '@/shared/api/client'
-import { ApiError } from '@/shared/api/errors'
+import { useAppStore } from '@/shared/config/appStore'
+import { FeedbackSheet, type FeedbackKind } from '@/features/feedback/FeedbackSheet'
 
 export function HomePage() {
   const navigate = useNavigate()
   const { data: me } = useMe()
   const { t, locale } = useI18n()
 
+  const [feedback, setFeedback] = useState<FeedbackKind | null>(null)
   const spendDisabled = !me || me.balance < me.spendMinAmount
-
-  function handleScan() {
-    const opened = tgShowScanQrPopup((text) => {
-      tgCloseScanQrPopup()
-      void (async () => {
-        try {
-          const idempotencyKey = (crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random()}`).replace(/-/g, '').slice(0, 20)
-          const result = await apiSubmitReceipt({ source: { qrText: text }, idempotencyKey })
-          tgHaptic('success')
-          navigate(`/earn/result/${result.id}`, { state: { result } })
-        } catch (err) {
-          tgHaptic('error')
-          const code = err instanceof ApiError ? err.code : 'INTERNAL_ERROR'
-          const meta = err instanceof ApiError ? err.meta : undefined
-          navigate('/earn/scan', { state: { errorCode: code, errorMeta: meta } })
-        }
-      })()
-      return true
-    })
-    if (!opened) navigate('/earn/scan')
-  }
 
   return (
     <Screen>
       <OfflineBanner />
-      <div className="flex items-center justify-between pt-4">
+      <div className="pt-4">
         <p className="text-[15px] text-[var(--color-ink-secondary)]">
           {t('home.hello')}{me?.firstName ? `, ${me.firstName}` : ''}
         </p>
-        <button
-          onClick={() => navigate('/settings')}
-          className="flex h-9 w-9 items-center justify-center rounded-full bg-[var(--color-surface)] active:bg-[var(--color-border)]"
-          aria-label={t('settings.title')}
-        >
-          <Settings size={18} className="text-[var(--color-ink-secondary)]" />
-        </button>
       </div>
 
       <div className="mt-4 rounded-3xl bg-[var(--color-surface)] p-5" style={{ boxShadow: 'var(--shadow-card)' }}>
         <BalanceBlock />
 
         <div className="mt-5 space-y-2.5">
-          <Button onClick={handleScan} className="flex items-center justify-center gap-2">
-            <ScanLine size={20} />
-            {t('home.scan')}
-          </Button>
           <Button
             variant="secondary"
             disabled={spendDisabled}
@@ -86,9 +54,112 @@ export function HomePage() {
         <RateBanner />
       </div>
 
+      <HowCard />
+
       <div className="mt-6">
-        <HistoryPreview />
+        <h2 className="mb-2.5 text-[15px] font-semibold text-[var(--color-ink)]">{t('home.feedback_title')}</h2>
+        <div className="grid grid-cols-2 gap-2.5">
+          <FeedbackTile
+            icon={<Lightbulb size={20} />}
+            title={t('feedback.suggestion')}
+            hint={t('home.suggestion_hint')}
+            tone="primary"
+            onClick={() => setFeedback('suggestion')}
+          />
+          <FeedbackTile
+            icon={<MessageSquareWarning size={20} />}
+            title={t('feedback.complaint')}
+            hint={t('home.complaint_hint')}
+            tone="danger"
+            onClick={() => setFeedback('complaint')}
+          />
+        </div>
       </div>
+
+      <FeedbackSheet open={feedback !== null} initialKind={feedback ?? 'suggestion'} onClose={() => setFeedback(null)} />
     </Screen>
+  )
+}
+
+function FeedbackTile({
+  icon,
+  title,
+  hint,
+  tone,
+  onClick,
+}: {
+  icon: React.ReactNode
+  title: string
+  hint: string
+  tone: 'primary' | 'danger'
+  onClick: () => void
+}) {
+  const toneCls =
+    tone === 'primary'
+      ? 'bg-[var(--color-primary-soft)] text-[var(--color-primary)]'
+      : 'bg-[var(--color-danger-soft)] text-[var(--color-danger)]'
+  return (
+    <button
+      onClick={onClick}
+      className="flex flex-col items-start gap-3 rounded-2xl bg-[var(--color-surface)] p-4 text-left transition-transform duration-150 active:scale-[0.97]"
+      style={{ boxShadow: 'var(--shadow-card)' }}
+    >
+      <div className="flex w-full items-center justify-between">
+        <span className={`flex h-10 w-10 items-center justify-center rounded-xl ${toneCls}`}>{icon}</span>
+        <ChevronRight size={18} className="text-[var(--color-ink-tertiary)]" />
+      </div>
+      <div>
+        <p className="text-[15px] font-semibold text-[var(--color-ink)]">{title}</p>
+        <p className="mt-0.5 text-[12.5px] text-[var(--color-ink-tertiary)]">{hint}</p>
+      </div>
+    </button>
+  )
+}
+
+/** Entry to the /guide page; the X hides it for good (persisted), guide stays reachable from Profil. */
+function HowCard() {
+  const navigate = useNavigate()
+  const { t } = useI18n()
+  const dismissed = useAppStore((s) => s.howCardDismissed)
+  const dismiss = useAppStore((s) => s.dismissHowCard)
+  if (dismissed) return null
+
+  return (
+    <div
+      role="button"
+      tabIndex={0}
+      onClick={() => navigate('/guide')}
+      onKeyDown={(e) => e.key === 'Enter' && navigate('/guide')}
+      className="relative mt-4 cursor-pointer rounded-2xl bg-[var(--color-surface)] p-4 transition-transform duration-150 active:scale-[0.98]"
+      style={{ boxShadow: 'var(--shadow-card)' }}
+    >
+      <button
+        onClick={(e) => {
+          e.stopPropagation()
+          dismiss()
+        }}
+        aria-label={t('common.close')}
+        className="absolute right-2.5 top-2.5 flex h-8 w-8 items-center justify-center rounded-full text-[var(--color-ink-tertiary)] active:bg-[var(--color-border)]"
+      >
+        <X size={16} />
+      </button>
+      <div className="flex items-center gap-3 pr-8">
+        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[var(--color-primary-soft)] text-[var(--color-primary)]">
+          <CircleHelp size={20} />
+        </span>
+        <div>
+          <p className="text-[15px] font-semibold text-[var(--color-ink)]">{t('home.how_title')}</p>
+          <p className="text-[12.5px] text-[var(--color-ink-tertiary)]">{t('home.how_sub')}</p>
+        </div>
+      </div>
+      <div className="mt-3.5 flex items-center gap-1 text-[12px] font-medium text-[var(--color-ink-secondary)]">
+        {[t('home.how_s1'), t('home.how_s2'), t('home.how_s3')].map((label, i) => (
+          <span key={label} className="flex items-center gap-1">
+            {i > 0 && <ChevronRight size={14} className="text-[var(--color-ink-tertiary)]" />}
+            <span className="whitespace-nowrap rounded-lg bg-[var(--color-bg)] px-2 py-1">{label}</span>
+          </span>
+        ))}
+      </div>
+    </div>
   )
 }

@@ -1,3 +1,5 @@
+import { translate } from '@/shared/config/dictionaries'
+import { useAppStore } from '@/shared/config/appStore'
 import { Component, type ReactNode } from 'react'
 
 interface Props {
@@ -25,12 +27,12 @@ export class ErrorBoundary extends Component<Props, State> {
       return (
         this.props.fallback ?? (
           <div className="flex min-h-[240px] flex-col items-center justify-center gap-3 px-6 text-center">
-            <p className="text-[15px] font-medium text-[var(--color-ink)]">Nimadir ishlamadi</p>
+            <p className="text-[15px] font-medium text-[var(--color-ink)]">{translate(useAppStore.getState().locale, 'common.something_wrong')}</p>
             <button
               onClick={() => window.location.reload()}
               className="text-[14px] font-semibold text-[var(--color-primary)]"
             >
-              Qayta yuklash
+              {translate(useAppStore.getState().locale, 'common.reload')}
             </button>
           </div>
         )

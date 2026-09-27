@@ -63,6 +63,27 @@ export async function apiGetRate(stationId?: string): Promise<RateInfo> {
   }
 }
 
+export interface Promotion {
+  id: string
+  name: string
+  percent: number
+  startsAt: string
+  endsAt: string
+  /** true = running now, false = scheduled */
+  active: boolean
+  /** station names; empty = whole network */
+  stations: string[]
+}
+
+export async function apiLogout(): Promise<void> {
+  await http.post('/me/logout')
+}
+
+export async function apiGetPromotions(): Promise<Promotion[]> {
+  const { data } = await http.get<{ data: Promotion[] }>('/me/promotions')
+  return data.data
+}
+
 export async function apiRegister(input: { firstName: string }): Promise<UserProfile> {
   const { data } = await http.post<{ data: MeResponse }>('/me/register', { firstName: input.firstName })
   return toUserProfile(data.data)

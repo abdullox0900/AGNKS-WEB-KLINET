@@ -6,6 +6,8 @@ import { Screen } from '@/shared/ui/Screen'
 import { useI18n } from '@/app/providers/I18nProvider'
 import { isInTelegram, tgRequestContact } from '@/shared/lib/telegram'
 import { apiGetMe, apiSetPhoneManually, apiStartPhoneVerification } from '@/shared/api/client'
+import { PhoneInput } from '@/shared/ui/PhoneInput'
+import { isCompletePhone, toE164 } from '@/shared/lib/phone'
 
 type Status = 'idle' | 'checking' | 'timeout' | 'denied'
 
@@ -14,7 +16,7 @@ export function PhonePage() {
   const { t } = useI18n()
   const [status, setStatus] = useState<Status>('idle')
   const [manual, setManual] = useState(false)
-  const [phone, setPhone] = useState('+998 ')
+  const [phone, setPhone] = useState('')
   const [manualError, setManualError] = useState<string | null>(null)
   const [manualSubmitting, setManualSubmitting] = useState(false)
   const intervalRef = useRef<number | null>(null)
@@ -52,18 +54,17 @@ export function PhonePage() {
   }
 
   async function handleManualSubmit() {
-    const normalized = phone.replace(/\s/g, '')
-    if (!/^\+998\d{9}$/.test(normalized)) {
-      setManualError("Raqam noto'g'ri — +998901234567 shaklida yozing")
+    if (!isCompletePhone(phone)) {
+      setManualError(t('phone.manual_invalid'))
       return
     }
     setManualSubmitting(true)
     setManualError(null)
     try {
-      await apiSetPhoneManually(normalized)
+      await apiSetPhoneManually(toE164(phone))
       navigate('/onboarding/name')
     } catch {
-      setManualError('Xatolik yuz berdi, qayta urinib ko\'ring')
+      setManualError(t('common.error_generic'))
     } finally {
       setManualSubmitting(false)
     }
@@ -77,22 +78,25 @@ export function PhonePage() {
             <Phone size={28} className="text-[var(--color-primary)]" />
           </div>
           <h1 className="mb-2 text-[24px] font-bold text-[var(--color-ink)]">{t('phone.title')}</h1>
-          <p className="mb-6 text-[15px] text-[var(--color-ink-secondary)]">Telefon raqamingizni yozing</p>
-          <input
+          <p className="mb-6 text-[15px] text-[var(--color-ink-secondary)]">{t('phone.manual_desc')}</p>
+          <PhoneInput
             value={phone}
-            onChange={(e) => setPhone(e.target.value)}
-            placeholder="+998901234567"
-            className="h-13 w-full rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-3.5 text-[16px] text-[var(--color-ink)] outline-none focus:border-[var(--color-primary)]"
+            onChange={(v) => {
+              setPhone(v)
+              setManualError(null)
+            }}
+            autoFocus
+            className="h-14 rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] px-4 text-[17px]"
           />
           {manualError && <p className="mt-2 text-[14px] font-medium text-[var(--color-danger)]">{manualError}</p>}
         </div>
 
         <div className="space-y-2">
           <Button onClick={handleManualSubmit} loading={manualSubmitting}>
-            Davom etish
+            {t('lang.continue')}
           </Button>
           <Button variant="ghost" onClick={() => setManual(false)}>
-            Orqaga
+            {t('common.back')}
           </Button>
         </div>
       </Screen>
@@ -127,7 +131,7 @@ export function PhonePage() {
           {status === 'timeout' || status === 'denied' ? t('phone.retry') : t('phone.share')}
         </Button>
         <Button variant="ghost" onClick={() => setManual(true)} disabled={status === 'checking'}>
-          Raqamni qo'lda kiritish
+          {t('phone.manual')}
         </Button>
       </div>
     </Screen>

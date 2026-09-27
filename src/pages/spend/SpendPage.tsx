@@ -42,7 +42,7 @@ export function SpendPage() {
 
   return (
     <Screen>
-      <PageHeader title={t('spend.title')} />
+      <PageHeader title={t('spend.title')} back={false} />
       <div className="flex flex-col items-center pt-6 text-center">
         {!online ? (
           <div className="flex h-[240px] w-[240px] items-center justify-center rounded-3xl bg-[var(--color-surface)] px-8">

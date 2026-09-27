@@ -46,7 +46,7 @@ export function HistoryPage() {
 
   return (
     <Screen padded={false}>
-      <PageHeader title={t('history.title')} />
+      <PageHeader title={t('history.title')} back={false} />
       <div className="flex gap-2 overflow-x-auto px-4 pb-3">
         <Chip active={filter === 'all'} onClick={() => setFilter('all')}>
           {t('history.all')}
