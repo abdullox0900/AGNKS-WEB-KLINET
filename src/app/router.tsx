@@ -17,6 +17,7 @@ import { HistoryPage } from '@/pages/history/HistoryPage'
 import { SettingsPage } from '@/pages/settings/SettingsPage'
 import { GuidePage } from '@/pages/guide/GuidePage'
 import { PromotionsPage } from '@/pages/promotions/PromotionsPage'
+import { NewsPage } from '@/pages/news/NewsPage'
 
 function MainLayout() {
   return (
@@ -33,7 +34,7 @@ function MainLayout() {
 function TabsLayout() {
   return (
     <>
-      <div style={{ paddingBottom: `calc(${BOTTOM_NAV_HEIGHT + 16}px + env(safe-area-inset-bottom))` }}>
+      <div style={{ paddingBottom: `calc(${BOTTOM_NAV_HEIGHT + 16}px + var(--app-inset-bottom))` }}>
         <Outlet />
       </div>
       <BottomNav />
@@ -62,6 +63,7 @@ export const router = createBrowserRouter([
       { path: '/earn/result/:id', element: <ResultPage /> },
       { path: '/guide', element: <GuidePage /> },
       { path: '/promotions', element: <PromotionsPage /> },
+      { path: '/news', element: <NewsPage /> },
     ],
   },
 ])

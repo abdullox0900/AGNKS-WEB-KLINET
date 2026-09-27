@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Wallet, Lightbulb, MessageSquareWarning, ChevronRight, CircleHelp, X } from 'lucide-react'
-import { useMe } from '@/shared/api/hooks'
+import { Wallet, Lightbulb, MessageSquareWarning, ChevronRight, CircleHelp, X, Bell } from 'lucide-react'
+import { useMe, useNews } from '@/shared/api/hooks'
 import { Screen } from '@/shared/ui/Screen'
 import { Button } from '@/shared/ui/Button'
 import { BalanceBlock } from '@/widgets/BalanceBlock'
@@ -23,10 +23,11 @@ export function HomePage() {
   return (
     <Screen>
       <OfflineBanner />
-      <div className="pt-4">
+      <div className="flex items-center justify-between pt-4">
         <p className="text-[15px] text-[var(--color-ink-secondary)]">
           {t('home.hello')}{me?.firstName ? `, ${me.firstName}` : ''}
         </p>
+        <NewsBell />
       </div>
 
       <div className="mt-4 rounded-3xl bg-[var(--color-surface)] p-5" style={{ boxShadow: 'var(--shadow-card)' }}>
@@ -161,5 +162,29 @@ function HowCard() {
         ))}
       </div>
     </div>
+  )
+}
+
+/** 🔔 → /news, with a dot while there is a broadcast newer than the last one seen. */
+function NewsBell() {
+  const navigate = useNavigate()
+  const { t } = useI18n()
+  const { data } = useNews()
+  const seenAt = useAppStore((s) => s.newsSeenAt)
+  const latest = data?.[0]?.sentAt
+  const unread = !!latest && (!seenAt || new Date(latest) > new Date(seenAt))
+
+  return (
+    <button
+      onClick={() => navigate('/news')}
+      aria-label={t('news.title')}
+      className="relative flex h-10 w-10 items-center justify-center rounded-full bg-[var(--color-surface)] text-[var(--color-ink-secondary)] active:bg-[var(--color-border)]"
+      style={{ boxShadow: 'var(--shadow-card)' }}
+    >
+      <Bell size={19} />
+      {unread && (
+        <span className="absolute right-2 top-2 h-2.5 w-2.5 rounded-full border-2 border-[var(--color-surface)] bg-[var(--color-danger)]" />
+      )}
+    </button>
   )
 }

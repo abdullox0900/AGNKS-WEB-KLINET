@@ -67,7 +67,7 @@ export function BottomNav() {
 
   return (
     <nav
-      className="fixed inset-x-0 bottom-0 z-40 mx-auto w-full max-w-[480px] border-t border-[var(--color-border)] bg-[var(--color-surface)] pb-[env(safe-area-inset-bottom)]"
+      className="fixed inset-x-0 bottom-0 z-40 mx-auto w-full max-w-[480px] border-t border-[var(--color-border)] bg-[var(--color-surface)] pb-[var(--app-inset-bottom)]"
       style={{ boxShadow: '0 -8px 24px -16px rgba(20, 22, 26, 0.18)' }}
     >
       <div className="flex" style={{ height: BOTTOM_NAV_HEIGHT }}>

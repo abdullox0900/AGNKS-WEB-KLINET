@@ -8,8 +8,9 @@ export type ThemePref = 'auto' | 'light' | 'dark'
 interface AppState {
   locale: Locale
   setLocale: (locale: Locale) => void
-  marketingOptIn: boolean
-  setMarketingOptIn: (value: boolean) => void
+  /** sentAt of the newest broadcast the user has seen — drives the 🔔 dot (per device) */
+  newsSeenAt: string | null
+  markNewsSeen: (sentAt: string) => void
   /** Home "Qanday ishlaydi?" card closed by the user — never shown again. */
   howCardDismissed: boolean
   theme: ThemePref
@@ -22,8 +23,8 @@ export const useAppStore = create<AppState>()(
     (set) => ({
       locale: 'uz',
       setLocale: (locale) => set({ locale }),
-      marketingOptIn: false,
-      setMarketingOptIn: (marketingOptIn) => set({ marketingOptIn }),
+      newsSeenAt: null,
+      markNewsSeen: (newsSeenAt) => set({ newsSeenAt }),
       howCardDismissed: false,
       dismissHowCard: () => set({ howCardDismissed: true }),
       theme: 'auto',

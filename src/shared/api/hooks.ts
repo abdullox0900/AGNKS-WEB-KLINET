@@ -1,5 +1,5 @@
 import useSWR from 'swr'
-import { apiGetMe, apiGetRate, apiGetHistory, apiGetPromotions } from './client'
+import { apiGetMe, apiGetRate, apiGetHistory, apiGetPromotions, apiGetNews } from './client'
 
 export function useMe() {
   return useSWR('/me', apiGetMe, { revalidateOnFocus: true })
@@ -7,6 +7,10 @@ export function useMe() {
 
 export function useRate() {
   return useSWR('/me/rate', apiGetRate, { refreshInterval: 5 * 60 * 1000 })
+}
+
+export function useNews() {
+  return useSWR('/me/news', apiGetNews, { refreshInterval: 5 * 60 * 1000 })
 }
 
 export function usePromotions() {

@@ -6,8 +6,7 @@ import { EmptyState } from '@/shared/ui/EmptyState'
 import { ErrorState } from '@/shared/ui/ErrorState'
 import { Toggle } from '@/shared/ui/Toggle'
 import { useI18n } from '@/app/providers/I18nProvider'
-import { useAppStore } from '@/shared/config/appStore'
-import { usePromotions, useRate } from '@/shared/api/hooks'
+import { useMe, usePromotions, useRate } from '@/shared/api/hooks'
 import { apiSetMarketingOptIn, type Promotion } from '@/shared/api/client'
 import { formatDate, formatTime } from '@/shared/lib/format'
 import { cn } from '@/shared/lib/cn'
@@ -49,16 +48,18 @@ export function PromotionsPage() {
   const { t } = useI18n()
   const { data, isLoading, error, mutate } = usePromotions()
   const { data: rate } = useRate()
-  const marketingOptIn = useAppStore((s) => s.marketingOptIn)
-  const setMarketingOptIn = useAppStore((s) => s.setMarketingOptIn)
+  const { data: me, mutate: mutateMe } = useMe()
 
   async function handleNotifyChange(value: boolean) {
-    setMarketingOptIn(value)
-    try {
-      await apiSetMarketingOptIn(value)
-    } catch {
-      setMarketingOptIn(!value)
-    }
+    if (!me) return
+    // optimistic: flip now, re-read /me afterwards (rolls back on failure)
+    await mutateMe(
+      async () => {
+        await apiSetMarketingOptIn(value)
+        return { ...me, marketingOptIn: value }
+      },
+      { optimisticData: { ...me, marketingOptIn: value }, rollbackOnError: true, revalidate: true },
+    ).catch(() => undefined)
   }
 
   const active = data?.filter((p) => p.active) ?? []
@@ -76,7 +77,7 @@ export function PromotionsPage() {
             <p className="text-[15px] font-medium text-[var(--color-ink)]">{t('promo.notify')}</p>
             <p className="text-[12.5px] text-[var(--color-ink-tertiary)]">{t('promo.notify_hint')}</p>
           </div>
-          <Toggle checked={marketingOptIn} onChange={handleNotifyChange} />
+          <Toggle checked={me?.marketingOptIn ?? false} onChange={handleNotifyChange} />
         </div>
 
         {isLoading ? (

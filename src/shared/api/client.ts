@@ -1,6 +1,7 @@
 import type { UserProfile, RateInfo } from '@/entities/user'
 import type { HistoryEntry, HistoryEntryType, ReceiptSource, SubmitReceiptResult } from '@/entities/receipt'
 import { http } from './http'
+import { fetchSoliqRecord, parseReceiptQrFields } from '@/shared/lib/soliq'
 
 interface MeResponse {
   id: string
@@ -16,6 +17,7 @@ interface MeResponse {
   receiptMaxAmount: number
   spendMinAmount: number
   spendMaxAmount: number
+  marketingOptIn: boolean
 }
 
 function toUserProfile(me: MeResponse): UserProfile {
@@ -30,6 +32,7 @@ function toUserProfile(me: MeResponse): UserProfile {
     receiptMaxAmount: me.receiptMaxAmount,
     spendMinAmount: me.spendMinAmount,
     cardBlocked: me.cardBlocked,
+    marketingOptIn: me.marketingOptIn,
   }
 }
 
@@ -73,6 +76,18 @@ export interface Promotion {
   active: boolean
   /** station names; empty = whole network */
   stations: string[]
+}
+
+export interface NewsItem {
+  id: string
+  textUz: string
+  textRu: string | null
+  sentAt: string
+}
+
+export async function apiGetNews(): Promise<NewsItem[]> {
+  const { data } = await http.get<{ data: NewsItem[] }>('/me/news')
+  return data.data
 }
 
 export async function apiLogout(): Promise<void> {
@@ -140,10 +155,16 @@ export async function apiSubmitReceipt(input: {
   lat?: number
   lng?: number
 }): Promise<SubmitReceiptResult> {
-  const body =
-    'qrText' in input.source
-      ? { qrText: input.source.qrText, lat: input.lat, lng: input.lng }
-      : { manual: input.source.manual, lat: input.lat, lng: input.lng }
+  const fields = 'qrText' in input.source ? parseReceiptQrFields(input.source.qrText) : input.source.manual
+  // Receipt data from soliq.uz, fetched on the phone (see shared/lib/soliq.ts) — the
+  // backend's own lookup doesn't get through from outside Uzbekistan.
+  const soliqData = fields ? await fetchSoliqRecord(fields) : null
+  const body = {
+    ...('qrText' in input.source ? { qrText: input.source.qrText } : { manual: input.source.manual }),
+    lat: input.lat,
+    lng: input.lng,
+    ...(soliqData ? { soliqData } : {}),
+  }
 
   const { data } = await http.post<{ data: SubmitReceiptResult }>('/me/receipts', body, {
     headers: { 'Idempotency-Key': input.idempotencyKey },

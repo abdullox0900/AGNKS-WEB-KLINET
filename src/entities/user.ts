@@ -9,6 +9,8 @@ export interface UserProfile {
   receiptMaxAmount: number
   spendMinAmount: number
   cardBlocked: boolean
+  /** promo messages from the bot switched on (stored server-side) */
+  marketingOptIn: boolean
 }
 
 export interface RateInfo {

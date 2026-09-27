@@ -72,7 +72,7 @@ export function HistoryPage() {
           <div>
             {groups.map(([label, entries]) => (
               <div key={label}>
-                <p className="sticky top-14 z-10 bg-[var(--color-bg)] py-2 text-[13px] font-semibold text-[var(--color-ink-tertiary)]">
+                <p className="sticky top-[calc(3.5rem+var(--app-inset-top))] z-10 bg-[var(--color-bg)] py-2 text-[13px] font-semibold text-[var(--color-ink-tertiary)]">
                   {label}
                 </p>
                 <div className="rounded-2xl bg-[var(--color-surface)] px-4">
