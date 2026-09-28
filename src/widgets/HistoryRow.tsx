@@ -29,7 +29,7 @@ export function HistoryRow({ entry, onClick }: { entry: HistoryEntry; onClick: (
       <p
         className={cn(
           'tnum shrink-0 text-[15px] font-semibold',
-          entry.amount >= 0 ? 'text-[var(--color-amber)]' : 'text-[var(--color-ink)]',
+          entry.amount > 0 ? 'text-[var(--color-money)]' : 'text-[var(--color-ink)]',
         )}
       >
         {formatSignedMoney(entry.amount, locale)}

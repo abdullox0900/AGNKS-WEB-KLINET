@@ -50,7 +50,7 @@ export function EntryDetailSheet({
         ) : (
           <>
             <div className="mb-3 text-center">
-              <p className={`tnum text-[28px] font-bold ${entry.amount >= 0 ? 'text-[var(--color-amber)]' : 'text-[var(--color-ink)]'}`}>
+              <p className={`tnum text-[28px] font-bold ${entry.amount > 0 ? 'text-[var(--color-money)]' : 'text-[var(--color-ink)]'}`}>
                 {formatSignedMoney(entry.amount, locale)}
               </p>
             </div>

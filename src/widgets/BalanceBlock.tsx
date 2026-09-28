@@ -23,7 +23,7 @@ export function BalanceBlock() {
           </button>
         </div>
       ) : (
-        <p className="tnum text-[34px] font-bold leading-none text-[var(--color-amber)]">
+        <p className="tnum text-[34px] font-bold leading-none text-[var(--color-money)]">
           {formatMoney(data.balance, locale)}
         </p>
       )}

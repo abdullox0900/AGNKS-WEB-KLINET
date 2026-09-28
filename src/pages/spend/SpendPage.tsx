@@ -99,7 +99,7 @@ export function SpendPage() {
 
         <div className="mt-8 rounded-2xl bg-[var(--color-surface)] px-6 py-4">
           <p className="text-[13px] font-medium text-[var(--color-ink-secondary)]">{t('spend.balance')}</p>
-          <p className="tnum mt-1 text-[22px] font-bold text-[var(--color-amber)]">
+          <p className="tnum mt-1 text-[22px] font-bold text-[var(--color-money)]">
             {me ? formatMoney(me.balance, locale) : '—'}
           </p>
         </div>

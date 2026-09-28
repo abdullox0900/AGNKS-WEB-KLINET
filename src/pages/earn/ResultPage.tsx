@@ -65,7 +65,7 @@ export function ResultPage() {
 
       {isApplied ? (
         <>
-          <p className="tnum text-[32px] font-bold text-[var(--color-amber)]">+{formatMoney(result.bonus, locale)}</p>
+          <p className="tnum text-[32px] font-bold text-[var(--color-money)]">+{formatMoney(result.bonus, locale)}</p>
           <p className="tnum mt-6 text-[15px] text-[var(--color-ink-secondary)]">
             {formatMoney(displayBalance, locale)}
           </p>

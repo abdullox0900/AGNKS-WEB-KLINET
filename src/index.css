@@ -30,6 +30,9 @@
   --color-amber-strong: #92400e;
   --color-amber-soft: #fef3e2;
 
+  /* Money — balances, earned bonus, positive amounts */
+  --color-money: #059669;
+
   --color-success: #15803d;
   --color-success-soft: #ecfdf3;
   --color-danger: #dc2626;
@@ -57,6 +60,8 @@
     --color-amber-strong: #ffd08a;
     --color-amber-soft: #2b2211;
 
+    --color-money: #34d399;
+
     --color-success: #4ade80;
     --color-success-soft: #0f2a1a;
     --color-danger: #f87171;
@@ -83,6 +88,8 @@
   --color-amber: #f0b155;
   --color-amber-strong: #ffd08a;
   --color-amber-soft: #2b2211;
+
+  --color-money: #34d399;
 
   --color-success: #4ade80;
   --color-success-soft: #0f2a1a;
