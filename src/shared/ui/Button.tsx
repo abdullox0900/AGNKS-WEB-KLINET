@@ -1,7 +1,7 @@
 import { type ButtonHTMLAttributes, forwardRef } from 'react'
 import { cn } from '@/shared/lib/cn'
 
-type Variant = 'primary' | 'secondary' | 'ghost' | 'danger'
+type Variant = 'primary' | 'secondary' | 'ghost' | 'danger' | 'gradient'
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: Variant
@@ -15,6 +15,8 @@ const variantClasses: Record<Variant, string> = {
     'bg-transparent border border-[var(--color-primary)] text-[var(--color-primary)] active:bg-[var(--color-primary-soft)] disabled:opacity-40 disabled:border-[var(--color-border)] disabled:text-[var(--color-ink-tertiary)]',
   ghost: 'bg-[var(--color-surface)] text-[var(--color-ink)] border border-[var(--color-border)] active:opacity-80',
   danger: 'bg-[var(--color-danger)] text-white active:opacity-85',
+  gradient:
+    'bg-[linear-gradient(135deg,var(--color-primary),var(--color-accent))] text-[var(--color-primary-ink)] active:opacity-85 disabled:opacity-40',
 }
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(

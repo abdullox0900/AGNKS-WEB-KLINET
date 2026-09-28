@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Gauge } from 'lucide-react'
+import { Flame } from 'lucide-react'
 import { useMe } from '@/shared/api/hooks'
 import { formatMoney } from '@/shared/lib/format'
 import { Skeleton } from '@/shared/ui/Skeleton'
@@ -30,7 +30,7 @@ export function BonusGauge() {
     <div>
       <div className="flex items-center justify-between">
         <span className="flex items-center gap-1.5 text-[13px] font-semibold text-[var(--color-ink-secondary)]">
-          <Gauge size={16} className="text-[var(--color-primary)]" /> {t('home.gauge_title')}
+          <Flame size={16} className="text-[var(--color-primary)]" /> {t('home.gauge_title')}
         </span>
         {data && (
           <span className="rounded-full bg-[var(--color-primary-soft)] px-2.5 py-1 text-[11.5px] font-bold text-[var(--color-primary)]">
@@ -43,7 +43,7 @@ export function BonusGauge() {
         <defs>
           <linearGradient id="bonusGaugeGradient" x1="0" x2="1">
             <stop offset="0%" stopColor="var(--color-primary)" />
-            <stop offset="100%" stopColor="var(--color-money)" />
+            <stop offset="100%" stopColor="var(--color-accent)" />
           </linearGradient>
         </defs>
         {Array.from({ length: 11 }).map((_, i) => {
@@ -55,13 +55,13 @@ export function BonusGauge() {
               y1={120 - 112 * Math.sin(a)}
               x2={120 + (i % 5 === 0 ? 102 : 106) * Math.cos(a)}
               y2={120 - (i % 5 === 0 ? 102 : 106) * Math.sin(a)}
-              stroke="var(--color-border)"
+              stroke="var(--color-ink-tertiary)"
               strokeWidth={i % 5 === 0 ? 2 : 1}
               strokeLinecap="round"
             />
           )
         })}
-        <path d="M20 120 A100 100 0 0 1 220 120" fill="none" stroke="var(--color-bg)" strokeWidth="14" strokeLinecap="round" />
+        <path d="M20 120 A100 100 0 0 1 220 120" fill="none" stroke="var(--color-track)" strokeWidth="14" strokeLinecap="round" />
         <path
           d="M20 120 A100 100 0 0 1 220 120"
           fill="none"
@@ -89,7 +89,7 @@ export function BonusGauge() {
         </div>
       ) : (
         <>
-          <p className="tnum -mt-3 text-center text-[34px] font-bold leading-none text-[var(--color-money)]">
+          <p className="tnum -mt-3 text-center text-[34px] font-bold leading-none text-[var(--color-ink)]">
             {formatMoney(data.balance, locale)}
           </p>
           <p className="mt-1.5 text-center text-[12.5px] text-[var(--color-ink-tertiary)]">

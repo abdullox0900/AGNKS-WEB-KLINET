@@ -21,9 +21,12 @@
   --color-ink-tertiary: #9096a3;
 
   /* Brand — 30% dark neutral text stays default; blue is primary action (10%) */
-  --color-primary: #2563eb;
+  --color-primary: #0284c7;
   --color-primary-ink: #ffffff;
-  --color-primary-soft: #eaf1ff;
+  --color-primary-soft: #e0f2fe;
+  /* Accent — gas-flame cyan, paired with primary in gradients (gauge, scan button) */
+  --color-accent: #22d3ee;
+  --color-track: #e3edf3;
 
   /* Ambra — bonus/money accent (10%) */
   --color-amber: #b45309;
@@ -39,6 +42,11 @@
   --color-danger-soft: #fef2f2;
   --color-warning-soft: #fffbeb;
 
+  /* Bottom nav stays dark navy in both themes (floating dock look) */
+  --color-nav-bg: #0b2230;
+  --color-nav-active: #38bdf8;
+  --color-nav-idle: #7d97a5;
+
   --shadow-card: 0 1px 2px rgba(20, 22, 26, 0.04), 0 8px 24px -12px rgba(20, 22, 26, 0.12);
   --shadow-float: 0 12px 32px -8px rgba(20, 22, 26, 0.22);
 }
@@ -52,9 +60,11 @@
     --color-ink-secondary: #a4aab8;
     --color-ink-tertiary: #6d7280;
 
-    --color-primary: #4f8cff;
-    --color-primary-ink: #0b1220;
-    --color-primary-soft: #16233d;
+    --color-primary: #38bdf8;
+    --color-primary-ink: #04212a;
+    --color-primary-soft: rgba(56, 189, 248, 0.14);
+    --color-accent: #22d3ee;
+    --color-track: #1c2836;
 
     --color-amber: #f0b155;
     --color-amber-strong: #ffd08a;
@@ -67,6 +77,10 @@
     --color-danger: #f87171;
     --color-danger-soft: #2c1414;
     --color-warning-soft: #2b2211;
+
+    --color-nav-bg: #0b2230;
+    --color-nav-active: #38bdf8;
+    --color-nav-idle: #5b7280;
 
     --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px -12px rgba(0, 0, 0, 0.5);
     --shadow-float: 0 12px 32px -8px rgba(0, 0, 0, 0.6);
@@ -81,9 +95,11 @@
   --color-ink-secondary: #a4aab8;
   --color-ink-tertiary: #6d7280;
 
-  --color-primary: #4f8cff;
-  --color-primary-ink: #0b1220;
-  --color-primary-soft: #16233d;
+  --color-primary: #38bdf8;
+  --color-primary-ink: #04212a;
+  --color-primary-soft: rgba(56, 189, 248, 0.14);
+  --color-accent: #22d3ee;
+  --color-track: #1c2836;
 
   --color-amber: #f0b155;
   --color-amber-strong: #ffd08a;
@@ -96,6 +112,10 @@
   --color-danger: #f87171;
   --color-danger-soft: #2c1414;
   --color-warning-soft: #2b2211;
+
+  --color-nav-bg: #0b2230;
+  --color-nav-active: #38bdf8;
+  --color-nav-idle: #5b7280;
 
   --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px -12px rgba(0, 0, 0, 0.5);
   --shadow-float: 0 12px 32px -8px rgba(0, 0, 0, 0.6);

@@ -33,24 +33,18 @@ function TabLink({ tab }: { tab: Tab }) {
     >
       {({ isActive }) => (
         <>
-          <span
-            className={cn(
-              'absolute top-0 h-[3px] w-6 rounded-b-full bg-[var(--color-primary)] transition-opacity duration-200',
-              isActive ? 'opacity-100' : 'opacity-0',
-            )}
-          />
           <Icon
-            size={24}
+            size={23}
             strokeWidth={isActive ? 2.2 : 1.8}
             className={cn(
               'transition-colors duration-200',
-              isActive ? 'text-[var(--color-primary)]' : 'text-[var(--color-ink-tertiary)]',
+              isActive ? 'text-[var(--color-nav-active)]' : 'text-[var(--color-nav-idle)]',
             )}
           />
           <span
             className={cn(
-              'text-[12px] leading-none transition-colors duration-200',
-              isActive ? 'font-semibold text-[var(--color-primary)]' : 'font-medium text-[var(--color-ink-tertiary)]',
+              'text-[11px] leading-none transition-colors duration-200',
+              isActive ? 'font-bold text-[var(--color-nav-active)]' : 'font-medium text-[var(--color-nav-idle)]',
             )}
           >
             {t(tab.label)}
@@ -66,33 +60,28 @@ export function BottomNav() {
   const startScan = useStartScan()
 
   return (
-    <nav
-      className="fixed inset-x-0 bottom-0 z-40 mx-auto w-full max-w-[480px] border-t border-[var(--color-border)] bg-[var(--color-surface)] pb-[var(--app-inset-bottom)]"
-      style={{ boxShadow: '0 -8px 24px -16px rgba(20, 22, 26, 0.18)' }}
-    >
-      <div className="flex" style={{ height: BOTTOM_NAV_HEIGHT }}>
+    <nav className="fixed inset-x-0 bottom-0 z-40 mx-auto w-full max-w-[480px] px-4 pb-[max(14px,var(--app-inset-bottom))]">
+      <div
+        className="relative flex items-center rounded-full bg-[var(--color-nav-bg)] px-2"
+        style={{ height: BOTTOM_NAV_HEIGHT, boxShadow: '0 16px 36px -16px rgba(0,0,0,.45)' }}
+      >
         {LEFT.map((tab) => (
           <TabLink key={tab.to} tab={tab} />
         ))}
 
-        {/* Center slot: 72px halo ring lifted above the bar, 52px action button inside. */}
-        <div className="relative flex flex-1 justify-center">
-          <div className="absolute -top-7 flex h-[72px] w-[72px] items-center justify-center rounded-full bg-[var(--color-surface)]">
-            <button
-              onClick={() => {
-                tgImpact('medium')
-                startScan()
-              }}
-              aria-label={t('nav.scan')}
-              className="flex h-[52px] w-[52px] items-center justify-center rounded-full bg-[var(--color-primary)] text-[var(--color-primary-ink)] transition-transform duration-150 active:scale-90"
-              style={{ boxShadow: '0 8px 20px -6px color-mix(in srgb, var(--color-primary) 60%, transparent)' }}
-            >
-              <ScanLine size={24} strokeWidth={2.2} />
-            </button>
-          </div>
-          <span className="absolute bottom-[14px] text-[12px] font-medium leading-none text-[var(--color-ink-tertiary)]">
-            {t('nav.scan')}
-          </span>
+        {/* Center slot: raised gradient scan button, ringed by the page background. */}
+        <div className="relative flex w-[76px] justify-center">
+          <button
+            onClick={() => {
+              tgImpact('medium')
+              startScan()
+            }}
+            aria-label={t('nav.scan')}
+            className="absolute -top-9 flex h-[62px] w-[62px] items-center justify-center rounded-full border-4 border-[var(--color-bg)] text-[var(--color-primary-ink)] transition-transform duration-150 active:scale-90"
+            style={{ background: 'linear-gradient(135deg, var(--color-primary), var(--color-accent))' }}
+          >
+            <ScanLine size={26} strokeWidth={2.2} />
+          </button>
         </div>
 
         {RIGHT.map((tab) => (

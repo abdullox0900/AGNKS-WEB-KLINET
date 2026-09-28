@@ -3,31 +3,36 @@ import { useRate } from '@/shared/api/hooks'
 import { Skeleton } from '@/shared/ui/Skeleton'
 import { useI18n } from '@/app/providers/I18nProvider'
 
+/** Fixed-width card for the horizontal "Aksiyalar va narxlar" row on the home screen. */
 export function RateBanner() {
   const { data, isLoading } = useRate()
   const { t, locale } = useI18n()
 
-  if (isLoading) return <Skeleton className="h-11 w-full rounded-2xl" />
+  if (isLoading) return <Skeleton className="h-[132px] w-[200px] shrink-0 rounded-[20px]" />
   if (!data) return null
 
   if (data.promo) {
     const endsAt = new Date(data.promo.endsAt)
     const time = endsAt.toLocaleTimeString(locale === 'ru' ? 'ru-RU' : 'uz-UZ', { hour: '2-digit', minute: '2-digit' })
     return (
-      <div className="flex items-center gap-2 rounded-2xl bg-[var(--color-amber-soft)] px-4 py-3">
-        <Sparkles size={16} className="shrink-0 text-[var(--color-amber)]" />
-        <p className="text-[13px] font-medium text-[var(--color-amber-strong)]">
-          {data.promo.label} · {data.promo.percent}% · {t('home.promo_until', { time })}
+      <div
+        className="w-[220px] shrink-0 rounded-[20px] p-4 text-white"
+        style={{ background: 'linear-gradient(135deg, var(--color-primary), var(--color-accent))' }}
+      >
+        <Sparkles size={22} />
+        <p className="tnum mt-3 text-[20px] font-extrabold leading-none">{data.promo.percent}% bonus</p>
+        <p className="mt-1.5 text-[12.5px] text-white/85">
+          {data.promo.label} · {t('home.promo_until', { time })}
         </p>
       </div>
     )
   }
 
   return (
-    <div className="rounded-2xl bg-[var(--color-surface)] px-4 py-3">
-      <p className="text-[13px] font-medium text-[var(--color-ink-secondary)]">
-        {t('home.rate_default', { rate: data.basePercent })}
-      </p>
+    <div className="w-[170px] shrink-0 rounded-[20px] bg-[var(--color-surface)] p-4" style={{ boxShadow: 'var(--shadow-card)' }}>
+      <Sparkles size={22} className="text-[var(--color-primary)]" />
+      <p className="mt-3 text-[12px] text-[var(--color-ink-tertiary)]">{t('home.rate_card')}</p>
+      <p className="tnum text-[20px] font-extrabold leading-none">{data.basePercent}%</p>
     </div>
   )
 }

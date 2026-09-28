@@ -5,6 +5,7 @@ import { useMe, useNews } from '@/shared/api/hooks'
 import { Screen } from '@/shared/ui/Screen'
 import { Button } from '@/shared/ui/Button'
 import { BonusGauge } from '@/widgets/BonusGauge'
+import { QuickActions } from '@/widgets/QuickActions'
 import { RateBanner } from '@/widgets/RateBanner'
 import { MethanePriceCard } from '@/widgets/MethanePriceCard'
 import { useI18n } from '@/app/providers/I18nProvider'
@@ -23,9 +24,15 @@ export function HomePage() {
   return (
     <Screen>
       <div className="flex items-center justify-between pt-4">
-        <p className="text-[15px] text-[var(--color-ink-secondary)]">
-          {t('home.hello')}{me?.firstName ? `, ${me.firstName}` : ''}
-        </p>
+        <div className="flex items-center gap-3">
+          <span className="flex h-11 w-11 items-center justify-center rounded-full bg-[var(--color-primary-soft)] text-[15px] font-bold text-[var(--color-primary)]">
+            {(me?.firstName ?? '?').charAt(0).toUpperCase()}
+          </span>
+          <div>
+            <p className="text-[12.5px] text-[var(--color-ink-tertiary)]">{t('home.hello')}</p>
+            <p className="text-[17px] font-bold leading-tight text-[var(--color-ink)]">{me?.firstName ?? '—'}</p>
+          </div>
+        </div>
         <NewsBell />
       </div>
 
@@ -34,7 +41,7 @@ export function HomePage() {
 
         <div className="mt-4 space-y-2.5">
           <Button
-            variant="primary"
+            variant="gradient"
             disabled={spendDisabled}
             onClick={() => navigate('/spend')}
             className="flex items-center justify-center gap-2"
@@ -50,7 +57,15 @@ export function HomePage() {
         </div>
       </div>
 
-      <div className="mt-4 space-y-2.5">
+      <QuickActions />
+
+      <div className="mb-2.5 mt-6 flex items-center justify-between">
+        <p className="text-[15px] font-bold text-[var(--color-ink)]">{t('home.prices_title')}</p>
+        <button onClick={() => navigate('/promotions')} className="text-[13px] font-semibold text-[var(--color-primary)]">
+          {t('home.history_all')}
+        </button>
+      </div>
+      <div className="-mx-4 flex gap-3 overflow-x-auto px-4 pb-1">
         <RateBanner />
         <MethanePriceCard />
       </div>
