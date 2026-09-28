@@ -1,18 +1,6 @@
-import { useEffect, useState } from 'react'
+import { useNetworkStore } from './network'
 
+/** false only when there is no working connection (see shared/lib/network.ts). */
 export function useOnline() {
-  const [online, setOnline] = useState(navigator.onLine)
-
-  useEffect(() => {
-    const onOnline = () => setOnline(true)
-    const onOffline = () => setOnline(false)
-    window.addEventListener('online', onOnline)
-    window.addEventListener('offline', onOffline)
-    return () => {
-      window.removeEventListener('online', onOnline)
-      window.removeEventListener('offline', onOffline)
-    }
-  }, [])
-
-  return online
+  return useNetworkStore((s) => s.status !== 'offline')
 }

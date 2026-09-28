@@ -1,6 +1,5 @@
 import { createBrowserRouter, Outlet, useLocation } from 'react-router-dom'
 import { RequireOnboarding } from './RequireOnboarding'
-import { OfflineBanner } from '@/shared/ui/OfflineBanner'
 import { ErrorBoundary } from '@/shared/ui/ErrorBoundary'
 import { BottomNav, BOTTOM_NAV_HEIGHT } from '@/widgets/BottomNav'
 
@@ -23,7 +22,6 @@ import { NewsPage } from '@/pages/news/NewsPage'
 function MainLayout() {
   return (
     <RequireOnboarding>
-      <OfflineBanner />
       <ErrorBoundary>
         <Outlet />
       </ErrorBoundary>

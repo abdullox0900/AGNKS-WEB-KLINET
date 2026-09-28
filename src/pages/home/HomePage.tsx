@@ -6,7 +6,6 @@ import { Screen } from '@/shared/ui/Screen'
 import { Button } from '@/shared/ui/Button'
 import { BalanceBlock } from '@/widgets/BalanceBlock'
 import { RateBanner } from '@/widgets/RateBanner'
-import { OfflineBanner } from '@/shared/ui/OfflineBanner'
 import { useI18n } from '@/app/providers/I18nProvider'
 import { formatMoney } from '@/shared/lib/format'
 import { useAppStore } from '@/shared/config/appStore'
@@ -22,7 +21,6 @@ export function HomePage() {
 
   return (
     <Screen>
-      <OfflineBanner />
       <div className="flex items-center justify-between pt-4">
         <p className="text-[15px] text-[var(--color-ink-secondary)]">
           {t('home.hello')}{me?.firstName ? `, ${me.firstName}` : ''}

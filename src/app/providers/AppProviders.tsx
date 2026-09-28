@@ -6,11 +6,14 @@ import { ErrorBoundary } from '@/shared/ui/ErrorBoundary'
 import { isClientError } from '@/shared/api/errors'
 import { tgReady } from '@/shared/lib/telegram'
 import { useApplyTheme } from '@/shared/lib/useTheme'
+import { startNetworkMonitor } from '@/shared/lib/network'
+import { NetworkStatus } from '@/shared/ui/NetworkStatus'
 
 export function AppProviders({ children }: { children: ReactNode }) {
   useApplyTheme()
   useEffect(() => {
     tgReady()
+    startNetworkMonitor()
   }, [])
 
   return (
@@ -27,7 +30,10 @@ export function AppProviders({ children }: { children: ReactNode }) {
         }}
       >
         <I18nProvider>
-          <ToastProvider>{children}</ToastProvider>
+          <ToastProvider>
+            <NetworkStatus />
+            {children}
+          </ToastProvider>
         </I18nProvider>
       </SWRConfig>
     </ErrorBoundary>
