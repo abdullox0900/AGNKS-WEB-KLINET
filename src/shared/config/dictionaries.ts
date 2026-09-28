@@ -107,6 +107,11 @@ export const dictionaries = {
     'home.how_s2': 'Bonus oling',
     'home.how_s3': "Kassada to'lang",
     'home.promo_until': 'bugun {time} gacha',
+    'home.gauge_title': 'Bonus bosimi',
+    'home.gauge_ready': "To'lash uchun tayyor",
+    'home.gauge_left': "Yetguncha {left} qoldi",
+    'home.methane_price': 'Bugungi metan narxi',
+    'home.methane_unit': "so'm/m³",
 
     'feedback.title': 'Taklif va shikoyat',
     'feedback.suggestion': 'Taklif',
@@ -295,6 +300,11 @@ export const dictionaries = {
     'home.how_s2': 'Получайте',
     'home.how_s3': 'Платите',
     'home.promo_until': 'сегодня до {time}',
+    'home.gauge_title': 'Давление бонусов',
+    'home.gauge_ready': 'Готово к оплате',
+    'home.gauge_left': 'Осталось {left}',
+    'home.methane_price': 'Цена на метан сегодня',
+    'home.methane_unit': 'сум/м³',
 
     'feedback.title': 'Предложения и жалобы',
     'feedback.suggestion': 'Предложение',

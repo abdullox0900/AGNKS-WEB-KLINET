@@ -4,8 +4,9 @@ import { Wallet, Lightbulb, MessageSquareWarning, ChevronRight, CircleHelp, X, B
 import { useMe, useNews } from '@/shared/api/hooks'
 import { Screen } from '@/shared/ui/Screen'
 import { Button } from '@/shared/ui/Button'
-import { BalanceBlock } from '@/widgets/BalanceBlock'
+import { BonusGauge } from '@/widgets/BonusGauge'
 import { RateBanner } from '@/widgets/RateBanner'
+import { MethanePriceCard } from '@/widgets/MethanePriceCard'
 import { useI18n } from '@/app/providers/I18nProvider'
 import { formatMoney } from '@/shared/lib/format'
 import { useAppStore } from '@/shared/config/appStore'
@@ -29,11 +30,11 @@ export function HomePage() {
       </div>
 
       <div className="mt-4 rounded-3xl bg-[var(--color-surface)] p-5" style={{ boxShadow: 'var(--shadow-card)' }}>
-        <BalanceBlock />
+        <BonusGauge />
 
-        <div className="mt-5 space-y-2.5">
+        <div className="mt-4 space-y-2.5">
           <Button
-            variant="secondary"
+            variant="primary"
             disabled={spendDisabled}
             onClick={() => navigate('/spend')}
             className="flex items-center justify-center gap-2"
@@ -49,8 +50,9 @@ export function HomePage() {
         </div>
       </div>
 
-      <div className="mt-4">
+      <div className="mt-4 space-y-2.5">
         <RateBanner />
+        <MethanePriceCard />
       </div>
 
       <HowCard />
