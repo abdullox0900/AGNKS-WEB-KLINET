@@ -1,31 +1,20 @@
 import { useNavigate } from 'react-router-dom'
-import { tgShowScanQrPopup, tgCloseScanQrPopup, tgHaptic } from '@/shared/lib/telegram'
-import { apiSubmitReceipt } from '@/shared/api/client'
-import { ApiError } from '@/shared/api/errors'
+import { tgShowScanQrPopup, tgCloseScanQrPopup } from '@/shared/lib/telegram'
 
-/** Inside Telegram: native showScanQrPopup → submit straight away. Outside (plain
- * browser) the popup isn't available, so fall back to the in-app camera page. */
+/** Inside Telegram: native showScanQrPopup, then the full-screen /earn/submit step.
+ * Outside (plain browser) the popup isn't available, so open the in-app camera page. */
 export function useStartScan() {
   const navigate = useNavigate()
 
   return function startScan() {
+    // A rescan from the submit page's error view replaces it, so Back goes home instead
+    // of back to the failed receipt (which would be submitted again).
+    const replace = window.location.pathname === '/earn/submit'
     const opened = tgShowScanQrPopup((text) => {
       tgCloseScanQrPopup()
-      void (async () => {
-        try {
-          const idempotencyKey = (crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random()}`).replace(/-/g, '').slice(0, 20)
-          const result = await apiSubmitReceipt({ source: { qrText: text }, idempotencyKey })
-          tgHaptic('success')
-          navigate(`/earn/result/${result.id}`, { state: { result } })
-        } catch (err) {
-          tgHaptic('error')
-          const code = err instanceof ApiError ? err.code : 'INTERNAL_ERROR'
-          const meta = err instanceof ApiError ? err.meta : undefined
-          navigate('/earn/scan', { state: { errorCode: code, errorMeta: meta } })
-        }
-      })()
+      navigate('/earn/submit', { state: { qrText: text }, replace })
       return true
     })
-    if (!opened) navigate('/earn/scan')
+    if (!opened) navigate('/earn/scan', { replace })
   }
 }

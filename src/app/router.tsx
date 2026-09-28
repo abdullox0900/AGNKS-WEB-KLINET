@@ -1,4 +1,4 @@
-import { createBrowserRouter, Outlet } from 'react-router-dom'
+import { createBrowserRouter, Outlet, useLocation } from 'react-router-dom'
 import { RequireOnboarding } from './RequireOnboarding'
 import { OfflineBanner } from '@/shared/ui/OfflineBanner'
 import { ErrorBoundary } from '@/shared/ui/ErrorBoundary'
@@ -12,6 +12,7 @@ import { HowPage } from '@/pages/onboarding/HowPage'
 import { HomePage } from '@/pages/home/HomePage'
 import { ScanPage } from '@/pages/earn/ScanPage'
 import { ResultPage } from '@/pages/earn/ResultPage'
+import { SubmitPage } from '@/pages/earn/SubmitPage'
 import { SpendPage } from '@/pages/spend/SpendPage'
 import { HistoryPage } from '@/pages/history/HistoryPage'
 import { SettingsPage } from '@/pages/settings/SettingsPage'
@@ -42,6 +43,12 @@ function TabsLayout() {
   )
 }
 
+/** A rescan from the error view lands on the same path with a new QR — remount per navigation. */
+function SubmitRoute() {
+  const location = useLocation()
+  return <SubmitPage key={location.key} />
+}
+
 export const router = createBrowserRouter([
   { path: '/onboarding/lang', element: <LangPage /> },
   { path: '/onboarding/phone', element: <PhonePage /> },
@@ -60,6 +67,7 @@ export const router = createBrowserRouter([
         ],
       },
       { path: '/earn/scan', element: <ScanPage /> },
+      { path: '/earn/submit', element: <SubmitRoute /> },
       { path: '/earn/result/:id', element: <ResultPage /> },
       { path: '/guide', element: <GuidePage /> },
       { path: '/promotions', element: <PromotionsPage /> },
