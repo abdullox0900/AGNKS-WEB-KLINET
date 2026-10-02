@@ -1,11 +1,13 @@
 import { Fuel } from 'lucide-react'
 import { METHANE_PRICE_PER_M3 } from '@/shared/config/methanePrice'
+import { useMe } from '@/shared/api/hooks'
 import { useI18n } from '@/app/providers/I18nProvider'
 
 /** Fixed-width card for the horizontal "Aksiyalar va narxlar" row on the home screen. */
 export function MethanePriceCard() {
   const { t } = useI18n()
-  const price = METHANE_PRICE_PER_M3.toLocaleString('ru-RU').replace(/,/g, ' ')
+  const { data: me } = useMe()
+  const price = (me?.methanePrice ?? METHANE_PRICE_PER_M3).toLocaleString('ru-RU').replace(/,/g, ' ')
   return (
     <div className="w-[170px] shrink-0 rounded-[20px] bg-[var(--color-surface)] p-4" style={{ boxShadow: 'var(--shadow-card)' }}>
       <Fuel size={22} className="text-[var(--color-primary)]" />

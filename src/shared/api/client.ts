@@ -18,6 +18,7 @@ interface MeResponse {
   spendMinAmount: number
   spendMaxAmount: number
   marketingOptIn: boolean
+  methanePrice?: number
 }
 
 function toUserProfile(me: MeResponse): UserProfile {
@@ -33,6 +34,7 @@ function toUserProfile(me: MeResponse): UserProfile {
     spendMinAmount: me.spendMinAmount,
     cardBlocked: me.cardBlocked,
     marketingOptIn: me.marketingOptIn,
+    methanePrice: me.methanePrice ?? null,
   }
 }
 
