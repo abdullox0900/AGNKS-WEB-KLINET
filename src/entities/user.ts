@@ -3,6 +3,8 @@ export interface UserProfile {
   firstName: string
   phone: string | null
   registered: boolean
+  /** language the server uses for this client's Telegram messages */
+  lang: 'uz' | 'ru'
   balance: number
   pending: number
   receiptMinAmount: number

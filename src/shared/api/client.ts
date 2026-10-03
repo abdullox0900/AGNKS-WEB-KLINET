@@ -27,6 +27,7 @@ function toUserProfile(me: MeResponse): UserProfile {
     firstName: me.firstName,
     phone: me.phone,
     registered: me.registered,
+    lang: me.lang,
     balance: me.balance,
     pending: me.pendingAmount,
     receiptMinAmount: me.receiptMinAmount,
@@ -36,6 +37,11 @@ function toUserProfile(me: MeResponse): UserProfile {
     marketingOptIn: me.marketingOptIn,
     methanePrice: me.methanePrice ?? null,
   }
+}
+
+/** Tells the server which language to use for the bot's messages (Telegram notifications). */
+export async function apiSetLanguage(lang: 'uz' | 'ru'): Promise<void> {
+  await http.patch('/me', { lang })
 }
 
 export async function apiGetMe(): Promise<UserProfile> {
