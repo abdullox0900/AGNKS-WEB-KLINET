@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useAppStore } from '@/shared/config/appStore'
 import { tgColorScheme, tgOnThemeChanged, tgPaintChrome } from './telegram'
+import { applyBrand, brand, brandBackgroundHex } from './brand'
 
 // Must match --color-bg in index.css.
 const BG = { light: '#f6f7f9', dark: '#0f1115' } as const
@@ -31,6 +32,7 @@ export function useApplyTheme() {
     const root = document.documentElement
     root.dataset.theme = effective
     root.style.colorScheme = effective
-    tgPaintChrome(BG[effective])
+    applyBrand(effective)
+    tgPaintChrome(brand ? brandBackgroundHex(brand.hue, effective) : BG[effective])
   }, [effective])
 }
