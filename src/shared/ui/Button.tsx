@@ -16,7 +16,7 @@ const variantClasses: Record<Variant, string> = {
   ghost: 'bg-[var(--color-surface)] text-[var(--color-ink)] border border-[var(--color-border)] active:opacity-80',
   danger: 'bg-[var(--color-danger)] text-white active:opacity-85',
   gradient:
-    'bg-[linear-gradient(135deg,var(--color-primary),var(--color-accent))] text-[var(--color-primary-ink)] active:opacity-85 disabled:opacity-40',
+    'grad-flow bg-[linear-gradient(135deg,var(--color-primary),var(--color-accent))] text-[var(--color-primary-ink)] active:opacity-85 disabled:opacity-40',
 }
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(

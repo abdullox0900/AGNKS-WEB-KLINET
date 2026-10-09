@@ -77,7 +77,7 @@ export function BottomNav() {
               startScan()
             }}
             aria-label={t('nav.scan')}
-            className="absolute -top-9 flex h-[62px] w-[62px] items-center justify-center rounded-full border-4 border-[var(--color-bg)] text-[var(--color-primary-ink)] transition-transform duration-150 active:scale-90"
+            className="grad-flow absolute -top-9 flex h-[62px] w-[62px] items-center justify-center rounded-full border-4 border-[var(--color-bg)] text-[var(--color-primary-ink)] transition-transform duration-150 active:scale-90"
             style={{ background: 'linear-gradient(135deg, var(--color-primary), var(--color-accent))' }}
           >
             <ScanLine size={26} strokeWidth={2.2} />

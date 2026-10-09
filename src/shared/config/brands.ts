@@ -11,6 +11,8 @@ export interface Brand {
   key: string
   name: string
   hue: number
+  /** optional living background: a slow, soft "gas flame" glow + masked dot pattern, and a gently flowing gradient on the main buttons */
+  fx?: 'aura'
 }
 
 export const DEFAULT_BRAND_KEY = 'main'
@@ -19,8 +21,8 @@ export const BRANDS: Brand[] = [
   { key: 'kokand', name: "Qo'qon", hue: 160 },
   { key: 'quva', name: 'Quva', hue: 24 },
   { key: 'beshariq', name: 'Beshariq', hue: 85 },
-  { key: 'fargona', name: "Farg'ona", hue: 200 },
+  { key: 'fargona', name: "Farg'ona", hue: 200, fx: 'aura' },
   { key: 'margilon', name: "Marg'ilon", hue: 178 },
   { key: 'namuna', name: "Na'muna", hue: 48 },
-  { key: 'nursux', name: 'Nursux', hue: 222 },
+  { key: 'nursux', name: 'Nursux', hue: 222, fx: 'aura' },
 ]

@@ -31,6 +31,8 @@ export function brandVars(hue: number, scheme: Scheme): Record<string, string> {
   const h = ((hue % 360) + 360) % 360
   if (scheme === 'dark') {
     return {
+      '--brand-hue': String(h),
+      '--aura-k': '1',
       '--color-bg': hsl(h, 26, 8),
       '--color-surface': hsl(h, 22, 12),
       '--color-border': hsl(h, 18, 19),
@@ -45,6 +47,8 @@ export function brandVars(hue: number, scheme: Scheme): Record<string, string> {
     }
   }
   return {
+    '--brand-hue': String(h),
+    '--aura-k': '0.55',
     '--color-bg': hsl(h, 32, 96),
     '--color-surface': '#ffffff',
     '--color-border': hsl(h, 22, 90),
@@ -81,4 +85,6 @@ export function applyBrand(scheme: Scheme): void {
     if (vars) root.style.setProperty(name, vars[name])
     else root.style.removeProperty(name)
   }
+  if (brand?.fx) root.dataset.fx = brand.fx
+  else delete root.dataset.fx
 }

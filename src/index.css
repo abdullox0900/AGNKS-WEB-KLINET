@@ -159,3 +159,62 @@ body,
 #root {
   touch-action: pan-x pan-y;
 }
+
+/* ---- Station "aura" (see fx in shared/config/brands.ts) --------------------------------------------------
+   A slow, soft flame-blue glow at the top of the screen with a dot pattern fading out below it, and a gently
+   flowing gradient on the main buttons. Quiet on purpose: low opacity, 30–40 s drifts, nothing flashes.
+   --brand-hue / --aura-k come from applyBrand(); prefers-reduced-motion freezes it (rule above). */
+.brand-aura {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  overflow: hidden;
+}
+.brand-aura::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(hsl(var(--brand-hue) 85% 68% / calc(0.55 * var(--aura-k, 1))) 1px, transparent 1.5px);
+  background-size: 22px 22px;
+  opacity: 0.4;
+  -webkit-mask-image: linear-gradient(to bottom, #000 0%, transparent 50%);
+  mask-image: linear-gradient(to bottom, #000 0%, transparent 50%);
+}
+.brand-aura > i {
+  position: absolute;
+  border-radius: 50%;
+  will-change: transform;
+  background: radial-gradient(closest-side, hsl(var(--glow-h) 92% 58% / calc(var(--glow-o) * var(--aura-k, 1))), transparent);
+}
+.brand-aura > i:nth-child(1) {
+  width: 560px; height: 560px; top: -230px; left: -190px;
+  --glow-h: var(--brand-hue); --glow-o: 0.34;
+  animation: aura-a 32s ease-in-out infinite alternate;
+}
+.brand-aura > i:nth-child(2) {
+  width: 480px; height: 480px; top: -170px; right: -200px;
+  --glow-h: calc(var(--brand-hue) + 12); --glow-o: 0.28;
+  animation: aura-b 38s ease-in-out infinite alternate;
+}
+.brand-aura > i:nth-child(3) {
+  width: 420px; height: 420px; top: 110px; left: 18%;
+  --glow-h: calc(var(--brand-hue) - 22); --glow-o: 0.14;
+  animation: aura-c 44s ease-in-out infinite alternate;
+}
+@keyframes aura-a { to { transform: translate3d(80px, 56px, 0) scale(1.14); } }
+@keyframes aura-b { to { transform: translate3d(-70px, 44px, 0) scale(1.1); } }
+@keyframes aura-c { to { transform: translate3d(46px, -34px, 0) scale(0.94); } }
+
+html[data-fx="aura"] .grad-flow {
+  background: linear-gradient(120deg, var(--color-primary) 0%, var(--color-accent) 50%, var(--color-primary) 100%) !important;
+  background-size: 220% 100% !important;
+  animation: grad-flow 11s ease-in-out infinite alternate;
+}
+@keyframes grad-flow {
+  from { background-position: 0% 50%; }
+  to { background-position: 100% 50%; }
+}
+html[data-fx="aura"] .gauge-arc {
+  filter: drop-shadow(0 0 5px hsl(var(--brand-hue) 95% 60% / calc(0.45 * var(--aura-k, 1))));
+}

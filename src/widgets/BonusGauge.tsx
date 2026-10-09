@@ -65,6 +65,7 @@ export function BonusGauge() {
         <path
           d="M20 120 A100 100 0 0 1 220 120"
           fill="none"
+          className="gauge-arc"
           stroke="url(#bonusGaugeGradient)"
           strokeWidth="14"
           strokeLinecap="round"

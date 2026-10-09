@@ -16,7 +16,7 @@ export function RateBanner() {
     const time = endsAt.toLocaleTimeString(locale === 'ru' ? 'ru-RU' : 'uz-UZ', { hour: '2-digit', minute: '2-digit' })
     return (
       <div
-        className="w-[220px] shrink-0 rounded-[20px] p-4 text-white"
+        className="grad-flow w-[220px] shrink-0 rounded-[20px] p-4 text-white"
         style={{ background: 'linear-gradient(135deg, var(--color-primary), var(--color-accent))' }}
       >
         <Sparkles size={22} />

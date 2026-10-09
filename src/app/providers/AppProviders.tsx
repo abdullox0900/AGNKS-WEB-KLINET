@@ -8,6 +8,7 @@ import { tgReady } from '@/shared/lib/telegram'
 import { useApplyTheme } from '@/shared/lib/useTheme'
 import { startNetworkMonitor } from '@/shared/lib/network'
 import { NetworkStatus } from '@/shared/ui/NetworkStatus'
+import { BrandBackdrop } from '@/shared/ui/BrandBackdrop'
 
 export function AppProviders({ children }: { children: ReactNode }) {
   useApplyTheme()
@@ -31,6 +32,7 @@ export function AppProviders({ children }: { children: ReactNode }) {
       >
         <I18nProvider>
           <ToastProvider>
+            <BrandBackdrop />
             <NetworkStatus />
             {children}
           </ToastProvider>
