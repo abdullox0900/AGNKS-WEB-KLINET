@@ -230,3 +230,10 @@ html[data-fx="aura"] .page-strip {
   -webkit-backdrop-filter: blur(12px);
   backdrop-filter: blur(12px);
 }
+/* Page titles and the bottom action bar: no backing at all on aura stations — the glow runs straight behind them.
+   (The sticky date rows in the history list keep the clear glass above, so cards scrolling under them stay tidy.) */
+html[data-fx="aura"] .page-strip-clear {
+  background: transparent;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}

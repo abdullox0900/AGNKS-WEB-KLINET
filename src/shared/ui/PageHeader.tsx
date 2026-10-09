@@ -22,7 +22,7 @@ export function PageHeader({
     // Screen already pads the top by --app-inset-top; the sticky header takes that space
     // over (negative margin + same padding) so it isn't counted twice, and so the header
     // stays opaque under Telegram's fullscreen controls while the page scrolls beneath.
-    <div className="page-strip sticky top-0 z-20 -mt-[var(--app-inset-top)] pt-[var(--app-inset-top)]">
+    <div className="page-strip page-strip-clear sticky top-0 z-20 -mt-[var(--app-inset-top)] pt-[var(--app-inset-top)]">
       <div className="flex h-14 items-center gap-2 px-4">
         {showFallback && (
           <button
