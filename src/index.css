@@ -218,3 +218,15 @@ html[data-fx="aura"] .grad-flow {
 html[data-fx="aura"] .gauge-arc {
   filter: drop-shadow(0 0 5px hsl(var(--brand-hue) 95% 60% / calc(0.45 * var(--aura-k, 1))));
 }
+
+/* Sticky headers / bottom bars sit on the page background. On aura stations a flat band there would cut the glow
+   off like a stripe, so they become frosted glass: a faint tint of the page color over a blur. (If color-mix is
+   unsupported the rule is dropped and the solid color below stays.) */
+.page-strip {
+  background: var(--color-bg);
+}
+html[data-fx="aura"] .page-strip {
+  background: color-mix(in srgb, var(--color-bg) 14%, transparent);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+}

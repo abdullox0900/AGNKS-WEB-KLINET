@@ -22,7 +22,7 @@ export function Screen({
 
 export function FixedBottomBar({ children }: { children: ReactNode }) {
   return (
-    <div className="fixed inset-x-0 bottom-0 z-30 mx-auto w-full max-w-[480px] bg-[var(--color-bg)] px-4 pb-[max(16px,var(--app-inset-bottom))] pt-3">
+    <div className="page-strip fixed inset-x-0 bottom-0 z-30 mx-auto w-full max-w-[480px] px-4 pb-[max(16px,var(--app-inset-bottom))] pt-3">
       {children}
     </div>
   )
