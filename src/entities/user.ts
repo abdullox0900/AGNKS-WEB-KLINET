@@ -15,6 +15,8 @@ export interface UserProfile {
   marketingOptIn: boolean
   /** today's methane price (so'm/m³) set in the Dashboard; null from an older backend */
   methanePrice: number | null
+  /** show the "who brought you?" question (new client, switched on in the Dashboard, not answered yet) */
+  referralAsk: boolean
 }
 
 export interface RateInfo {

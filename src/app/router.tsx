@@ -2,6 +2,7 @@ import { createBrowserRouter, Outlet, useLocation } from 'react-router-dom'
 import { RequireOnboarding } from './RequireOnboarding'
 import { ErrorBoundary } from '@/shared/ui/ErrorBoundary'
 import { BottomNav, BOTTOM_NAV_HEIGHT } from '@/widgets/BottomNav'
+import { ReferralSheet } from '@/features/referral/ReferralSheet'
 
 import { LangPage } from '@/pages/onboarding/LangPage'
 import { PhonePage } from '@/pages/onboarding/PhonePage'
@@ -37,6 +38,7 @@ function TabsLayout() {
         <Outlet />
       </div>
       <BottomNav />
+      <ReferralSheet />
     </>
   )
 }

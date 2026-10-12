@@ -19,6 +19,7 @@ interface MeResponse {
   spendMaxAmount: number
   marketingOptIn: boolean
   methanePrice?: number
+  referralAsk?: boolean
 }
 
 function toUserProfile(me: MeResponse): UserProfile {
@@ -36,7 +37,22 @@ function toUserProfile(me: MeResponse): UserProfile {
     cardBlocked: me.cardBlocked,
     marketingOptIn: me.marketingOptIn,
     methanePrice: me.methanePrice ?? null,
+    referralAsk: me.referralAsk ?? false,
   }
+}
+
+export interface ReferralOptions {
+  stations: { id: string; name: string; attendants: { id: string; name: string }[] }[]
+}
+
+export async function apiGetReferralOptions(): Promise<ReferralOptions> {
+  const { data } = await http.get<{ data: ReferralOptions }>('/me/referral/options')
+  return data.data
+}
+
+/** "Who brought you?" — exactly one of: a listed attendant, a typed name, or skip. */
+export async function apiAnswerReferral(answer: { attendantId: string } | { name: string } | { skip: true }): Promise<void> {
+  await http.post('/me/referral', answer)
 }
 
 /** Tells the server which language to use for the bot's messages (Telegram notifications). */

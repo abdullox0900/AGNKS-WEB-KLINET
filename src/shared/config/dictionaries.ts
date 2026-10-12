@@ -1,5 +1,11 @@
 export const dictionaries = {
   uz: {
+    'ref.title': 'Sizni kim taklif qildi?',
+    'ref.desc': "Ilovani sizga zapravkadagi hodim tanishtirgan bo'lsa, ismini tanlang yoki yozing. Bu ixtiyoriy.",
+    'ref.other': 'Boshqa — ismini yozaman',
+    'ref.type_ph': 'Hodimning ismi',
+    'ref.send': 'Yuborish',
+    'ref.skip': "O'tkazib yuborish",
     'lang.title': 'Tilni tanlang',
     'lang.uz': "O'zbekcha",
     'lang.ru': 'Русский',
@@ -195,6 +201,12 @@ export const dictionaries = {
     'guide.a5': "Bosh sahifadagi «Shikoyat» bo'limi orqali yozing — javob beramiz.",
   },
   ru: {
+    'ref.title': 'Кто вас пригласил?',
+    'ref.desc': 'Если приложение вам показал сотрудник заправки, выберите его или напишите имя. Это необязательно.',
+    'ref.other': 'Другой — напишу имя',
+    'ref.type_ph': 'Имя сотрудника',
+    'ref.send': 'Отправить',
+    'ref.skip': 'Пропустить',
     'lang.title': 'Выберите язык',
     'lang.uz': "O'zbekcha",
     'lang.ru': 'Русский',
