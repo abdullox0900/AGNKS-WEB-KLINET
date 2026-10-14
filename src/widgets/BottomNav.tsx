@@ -4,6 +4,7 @@ import { useI18n } from '@/app/providers/I18nProvider'
 import { useStartScan } from '@/features/scan-receipt/useStartScan'
 import { tgImpact } from '@/shared/lib/telegram'
 import { cn } from '@/shared/lib/cn'
+import { useMe } from '@/shared/api/hooks'
 import type { DictKey } from '@/shared/config/dictionaries'
 
 type Tab = { to: string; icon: LucideIcon; label: DictKey }
@@ -23,6 +24,9 @@ export const BOTTOM_NAV_HEIGHT = 72
 function TabLink({ tab }: { tab: Tab }) {
   const { t } = useI18n()
   const Icon = tab.icon
+  const { data: me } = useMe()
+  // the Profil tab carries a red dot while an answer from support is waiting there
+  const dot = tab.to === '/settings' && !!me && (me.supportUnread > 0 || me.cardBlocked)
   return (
     <NavLink
       to={tab.to}
@@ -41,6 +45,7 @@ function TabLink({ tab }: { tab: Tab }) {
               isActive ? 'text-[var(--color-nav-active)]' : 'text-[var(--color-nav-idle)]',
             )}
           />
+          {dot && <span className="absolute right-[calc(50%-18px)] top-[14px] h-2.5 w-2.5 rounded-full bg-[var(--color-danger)] ring-2 ring-[var(--color-nav-bg)]" />}
           <span
             className={cn(
               'text-[11px] leading-none transition-colors duration-200',

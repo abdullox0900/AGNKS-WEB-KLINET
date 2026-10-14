@@ -12,6 +12,7 @@ import { useI18n } from '@/app/providers/I18nProvider'
 import { formatMoney } from '@/shared/lib/format'
 import { useAppStore } from '@/shared/config/appStore'
 import { FeedbackSheet, type FeedbackKind } from '@/features/feedback/FeedbackSheet'
+import { BlockedNotice } from '@/features/support/BlockedNotice'
 
 export function HomePage() {
   const navigate = useNavigate()
@@ -36,7 +37,11 @@ export function HomePage() {
         <NewsBell />
       </div>
 
-      <div className="mt-4 rounded-3xl bg-[var(--color-surface)] p-5" style={{ boxShadow: 'var(--shadow-card)' }}>
+      <div className="mt-4">
+        <BlockedNotice />
+      </div>
+
+      <div className="rounded-3xl bg-[var(--color-surface)] p-5" style={{ boxShadow: 'var(--shadow-card)' }}>
         <BonusGauge />
 
         <div className="mt-4 space-y-2.5">

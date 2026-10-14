@@ -17,6 +17,10 @@ export interface UserProfile {
   methanePrice: number | null
   /** show the "who brought you?" question (new client, switched on in the Dashboard, not answered yet) */
   referralAsk: boolean
+  /** the reason the SEO gave when blocking the card (null when not blocked) */
+  blockedReason: string | null
+  /** support threads with an answer the client has not opened yet */
+  supportUnread: number
 }
 
 export interface RateInfo {

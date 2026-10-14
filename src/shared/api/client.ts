@@ -20,6 +20,8 @@ interface MeResponse {
   marketingOptIn: boolean
   methanePrice?: number
   referralAsk?: boolean
+  blockedReason?: string | null
+  supportUnread?: number
 }
 
 function toUserProfile(me: MeResponse): UserProfile {
@@ -38,6 +40,8 @@ function toUserProfile(me: MeResponse): UserProfile {
     marketingOptIn: me.marketingOptIn,
     methanePrice: me.methanePrice ?? null,
     referralAsk: me.referralAsk ?? false,
+    blockedReason: me.blockedReason ?? null,
+    supportUnread: me.supportUnread ?? 0,
   }
 }
 
@@ -236,8 +240,51 @@ export async function apiGetHistoryEntry(type: HistoryEntryType, id: string): Pr
   }
 }
 
-export async function apiSendFeedback(input: { kind: 'suggestion' | 'complaint'; message: string }): Promise<void> {
-  await http.post('/me/feedback', input)
+export type SupportKind = 'suggestion' | 'complaint' | 'appeal'
+
+export interface SupportThreadSummary {
+  id: string
+  kind: SupportKind
+  status: 'open' | 'resolved'
+  preview: string
+  lastSender: 'client' | 'staff'
+  lastActivityAt: string
+  unread: boolean
+}
+
+export interface SupportMessage {
+  id: string
+  sender: 'client' | 'staff'
+  text: string
+  at: string
+}
+
+export interface SupportThread {
+  id: string
+  kind: SupportKind
+  status: 'open' | 'resolved'
+  messages: SupportMessage[]
+}
+
+/** Starts a thread (a blocked client's message becomes an appeal on the server) and returns its id. */
+export async function apiSendFeedback(input: { kind: 'suggestion' | 'complaint'; message: string }): Promise<{ id: string }> {
+  const { data } = await http.post<{ data: { id: string } }>('/me/feedback', input)
+  return data.data
+}
+
+export async function apiGetSupportThreads(): Promise<SupportThreadSummary[]> {
+  const { data } = await http.get<{ data: SupportThreadSummary[] }>('/me/feedback')
+  return data.data
+}
+
+/** Opening a thread marks the answers in it as read. */
+export async function apiGetSupportThread(id: string): Promise<SupportThread> {
+  const { data } = await http.get<{ data: SupportThread }>(`/me/feedback/${id}`)
+  return data.data
+}
+
+export async function apiReplySupport(id: string, message: string): Promise<void> {
+  await http.post(`/me/feedback/${id}/messages`, { message })
 }
 
 export async function apiSetMarketingOptIn(value: boolean): Promise<void> {

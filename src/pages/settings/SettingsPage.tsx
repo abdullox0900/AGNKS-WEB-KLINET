@@ -7,6 +7,8 @@ import { Sheet } from '@/shared/ui/Sheet'
 import { useI18n } from '@/app/providers/I18nProvider'
 import { useAppStore, type ThemePref } from '@/shared/config/appStore'
 import { FeedbackSheet } from '@/features/feedback/FeedbackSheet'
+import { useMe } from '@/shared/api/hooks'
+import { BlockedNotice } from '@/features/support/BlockedNotice'
 import { cn } from '@/shared/lib/cn'
 import { Button } from '@/shared/ui/Button'
 import { useToast } from '@/shared/ui/Toast'
@@ -52,6 +54,7 @@ export function SettingsPage() {
   const setTheme = useAppStore((s) => s.setTheme)
   const { mutate } = useSWRConfig()
   const { show } = useToast()
+  const { data: me } = useMe()
   const [loggingOut, setLoggingOut] = useState(false)
 
   async function handleLogout() {
@@ -73,6 +76,7 @@ export function SettingsPage() {
     <Screen padded={false}>
       <PageHeader title={t('settings.title')} back={false} />
       <div className="px-4">
+        <BlockedNotice />
         <div className="rounded-2xl bg-[var(--color-surface)] px-4" style={{ boxShadow: 'var(--shadow-card)' }}>
           <Row
             icon={<Globe size={17} />}
@@ -93,7 +97,18 @@ export function SettingsPage() {
             right={<ChevronRight size={18} className="text-[var(--color-ink-tertiary)]" />}
           />
           <Row icon={<CircleHelp size={17} />} label={t('home.how_title')} onClick={() => navigate('/guide')} />
-          <Row icon={<MessageSquareText size={17} />} label={t('feedback.title')} onClick={() => setSheet('feedback')} />
+          <Row
+            icon={<MessageSquareText size={17} />}
+            label={t('support.title')}
+            onClick={() => navigate('/support')}
+            right={
+              me && me.supportUnread > 0 ? (
+                <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-[var(--color-danger)] px-1.5 text-[11px] font-bold text-white">{me.supportUnread}</span>
+              ) : (
+                <ChevronRight size={18} className="text-[var(--color-ink-tertiary)]" />
+              )
+            }
+          />
           <Row icon={<Info size={17} />} label={t('settings.version')} right={<span className="text-[13px] text-[var(--color-ink-tertiary)]">1.0.0</span>} />
         </div>
 

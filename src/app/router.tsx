@@ -19,6 +19,8 @@ import { SettingsPage } from '@/pages/settings/SettingsPage'
 import { GuidePage } from '@/pages/guide/GuidePage'
 import { PromotionsPage } from '@/pages/promotions/PromotionsPage'
 import { NewsPage } from '@/pages/news/NewsPage'
+import { SupportPage } from '@/pages/support/SupportPage'
+import { SupportThreadPage } from '@/pages/support/SupportThreadPage'
 
 function MainLayout() {
   return (
@@ -72,6 +74,8 @@ export const router = createBrowserRouter([
       { path: '/guide', element: <GuidePage /> },
       { path: '/promotions', element: <PromotionsPage /> },
       { path: '/news', element: <NewsPage /> },
+      { path: '/support', element: <SupportPage /> },
+      { path: '/support/:id', element: <SupportThreadPage /> },
     ],
   },
 ])

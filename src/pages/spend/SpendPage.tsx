@@ -11,6 +11,7 @@ import { useOnline } from '@/shared/lib/useOnline'
 import { formatMoney, formatSignedMoney } from '@/shared/lib/format'
 import { apiGetMe } from '@/shared/api/client'
 import { useToast } from '@/shared/ui/Toast'
+import { BlockedNotice } from '@/features/support/BlockedNotice'
 
 export function SpendPage() {
   const { t, locale } = useI18n()
@@ -43,6 +44,9 @@ export function SpendPage() {
   return (
     <Screen>
       <PageHeader title={t('spend.title')} back={false} />
+      <div className="pt-3">
+        <BlockedNotice />
+      </div>
       <div className="flex flex-col items-center pt-6 text-center">
         {!online ? (
           <div className="flex h-[240px] w-[240px] items-center justify-center rounded-3xl bg-[var(--color-surface)] px-8">
