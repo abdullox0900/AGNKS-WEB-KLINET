@@ -200,6 +200,17 @@ export async function apiSubmitReceipt(input: {
   return data.data
 }
 
+/** Waiting receipts (soliq.uz hadn't confirmed them yet) the phone may re-check now — empty while Avto-tekshiruv is off. */
+export async function apiGetRecheckList(): Promise<{ id: string; t: string; r: string; c: string; s: string }[]> {
+  const { data } = await http.get<{ data: { items: { id: string; t: string; r: string; c: string; s: string }[] } }>('/me/receipts/recheck')
+  return data.data.items
+}
+
+export async function apiRecheckReceipt(id: string, soliqData: Record<string, unknown>): Promise<{ status: string }> {
+  const { data } = await http.post<{ data: { status: string } }>(`/me/receipts/${id}/recheck`, { soliqData })
+  return data.data
+}
+
 export async function apiCreateSpendToken(): Promise<{ qrText: string; code: string; expiresAt: string }> {
   const { data } = await http.post<{ data: { code: string; qrPayload: string; expiresAt: string } }>('/me/spend-token')
   return { qrText: data.data.qrPayload, code: data.data.code, expiresAt: data.data.expiresAt }
