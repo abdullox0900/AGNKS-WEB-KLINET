@@ -3,7 +3,6 @@ import { RequireOnboarding } from './RequireOnboarding'
 import { ErrorBoundary } from '@/shared/ui/ErrorBoundary'
 import { BottomNav, BOTTOM_NAV_HEIGHT } from '@/widgets/BottomNav'
 import { ReferralSheet } from '@/features/referral/ReferralSheet'
-import { useAutoRecheck } from '@/features/scan-receipt/useAutoRecheck'
 
 import { LangPage } from '@/pages/onboarding/LangPage'
 import { PhonePage } from '@/pages/onboarding/PhonePage'
@@ -35,7 +34,6 @@ function MainLayout() {
 
 /** Top-level tabs share the bottom bar; pad content so it never hides behind it. */
 function TabsLayout() {
-  useAutoRecheck()
   return (
     <>
       <div style={{ paddingBottom: `calc(${BOTTOM_NAV_HEIGHT + 16}px + var(--app-inset-bottom))` }}>
