@@ -45,6 +45,14 @@ export function getErrorCopy(
           : `Chek ${meta?.n ?? 30} daqiqa ichida skanerlanishi kerak`,
         actions: ['close'],
       }
+    case 'RECEIPT_DAILY_LIMIT':
+      return {
+        title: isRu ? 'Лимит на сегодня исчерпан' : 'Bugungi limit tugadi',
+        message: isRu
+          ? `В день можно отсканировать не больше ${meta?.limit ?? 3} чеков. Попробуйте завтра`
+          : `Kuniga ko'pi bilan ${meta?.limit ?? 3} ta chek skanerlash mumkin. Ertaga urinib ko'ring`,
+        actions: ['close'],
+      }
     case 'RECEIPT_TIME_INVALID':
       return {
         title: isRu ? 'Неверное время' : 'Vaqt noto\'g\'ri',
